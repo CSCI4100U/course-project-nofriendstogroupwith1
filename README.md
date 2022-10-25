@@ -2,7 +2,7 @@
 
 Group members (3-5) (no Student IDs, only names and github usernames):
 
-1. 
+1.  Alexander Naylor https://github.com/AlexNayl
 
 2. 
 

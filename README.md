@@ -6,7 +6,7 @@ Group members (3-5) (no Student IDs, only names and github usernames):
 
 2.  Tashdiq Ahmed https://github.com/tashahmed
 
-3. 
+3.  Dylan Moore https://github.com/Dym99
 
 4. 
 

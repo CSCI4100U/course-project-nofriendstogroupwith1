@@ -8,7 +8,7 @@ Group members (3-5) (no Student IDs, only names and github usernames):
 
 3.  Dylan Moore https://github.com/Dym99
 
-4. 
+4.  Sukhpreet Bansal https://github.com/Sukhpreet-7
 
 5.
 

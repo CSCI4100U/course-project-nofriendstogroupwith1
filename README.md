@@ -1,3 +1,14 @@
+## Project Concept 
+
+For this project we chose to make a social media app that consists of posting geo located photos onto a map. In this instance we've chosen to forgo user authentication and accounts due to project scope (if we have extra time we might look at it). The app is currently planned to consist of 3 screens. The map screen, the view-post screen, and the create-post screen.
+
+The map screen will consist of a map with location markers for posts. Tapping on a location marker brings up the view-post screen. Aditionaly there will be a button to create a new post at your current location.
+
+The view-post screen will show the image, how long ago it was posted, and a description if availible. It will have a back button to take the user back to the map screen.
+
+The create-post screen will have a mechanism to take a new photo and/or upload a photo from the users phone, and there will be a text box to add a description if the user desires.
+
+
 # CSCI4100 Group Project
 
 Group members (3-5) (no Student IDs, only names and github usernames):

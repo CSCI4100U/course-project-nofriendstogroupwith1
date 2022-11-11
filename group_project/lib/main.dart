@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:group_project/constants.dart';
 import 'package:group_project/dev_tools/post_test_list.dart';
+import 'package:group_project/models/db_utils.dart';
 import 'package:group_project/posts/add_post.dart';
 import 'package:group_project/views/map_view.dart';
 import 'package:group_project/views/post_view.dart';
@@ -96,6 +97,10 @@ class _DevPageState extends State<DevPage> {
             ElevatedButton(
                 onPressed: () => Navigator.pushNamed(context, "/devTestPostList"),
                 child: const Text("Go to post test list")
+            ),
+            ElevatedButton(
+                onPressed: () => DBUtils.createTable(),
+                child: const Text("Fix Local Database")
             ),
           ],
         ),

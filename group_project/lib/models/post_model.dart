@@ -41,26 +41,4 @@ class PostModel {
             (document) => Post.fromMap(document, reference: document.reference)
     ).toList();
   }
-
-
-  //TODO: Remove and use Firestore database to store posts
-  //Take two seconds, then return the post
-  //
-  //Just to make sure we can see what it looks like
-  //  while the app loads a post from online
-  //
-  Future<Post> getTestPost() async {
-    await Future.delayed(
-        const Duration(seconds: 2),
-        () {}
-    );
-
-    //Return hard-coded test post
-    return Post(
-        title: "Lorem Ispum",
-        imageURL: "https://cc0.photo/wp-content/uploads/2022/02/New-York-skyline-in-October-2017-980x656.jpg",
-        location: LatLng(43.945137,-78.900231),
-        caption: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-    );
-  }
 }

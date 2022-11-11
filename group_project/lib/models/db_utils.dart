@@ -8,8 +8,14 @@ class DBUtils {
     return openDatabase(
       path.join(await getDatabasesPath(), "group_project_nofriends.db"),
       onCreate: (db, version) {
-        db.execute('CREATE TABLE $savedPostTable(id INTEGER PRIMARY KEY, documentID STRING, hidden BOOL');
+        db.execute('CREATE TABLE $savedPostTable(id INTEGER PRIMARY KEY, documentID STRING, hidden BOOL)');
       },
+      version: 1,
     );
+  }
+
+  static Future createTable() async {
+    final db = await init();
+    db!.execute('CREATE TABLE $savedPostTable(id INTEGER PRIMARY KEY, documentID STRING, hidden BOOL)');
   }
 }

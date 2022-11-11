@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:group_project/models/db_utils.dart';
 
 import 'package:group_project/models/post_model.dart';
 import 'package:group_project/models/post.dart';
+import 'package:group_project/models/saved_model.dart';
 
 class PostView extends StatefulWidget {
   const PostView({Key? key}) : super(key: key);
@@ -12,6 +14,7 @@ class PostView extends StatefulWidget {
 
 class _PostViewState extends State<PostView> {
   final PostModel _postModel = PostModel();
+  final SavedModel _savedModel = SavedModel();
 
   Widget _buildCaptionBox(String? caption) {
     if (caption==null) {
@@ -43,10 +46,22 @@ class _PostViewState extends State<PostView> {
     );
   }
 
+  Future<Map<String, dynamic>> _getPostInfo() async {
+    List<Post> allposts = await _postModel.getAllPostsList();
+    Post post = allposts[0];
+    bool saved = await _savedModel.isPostSaved(null, post.reference!.id);
+    bool hidden = await _savedModel.isPostHidden(null, post.reference!.id);
+    return {
+      'post': post,
+      'saved': saved,
+      'hidden': hidden,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: _postModel.getTestPost(),
+        future: _getPostInfo(),
         builder: (context, snapshot) {
           //If the post hasn't loaded yet...
           if (!snapshot.hasData) {
@@ -58,31 +73,73 @@ class _PostViewState extends State<PostView> {
             );
           }
 
+          if (snapshot.data!.isEmpty) {
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text("No posts found"),
+              ),
+            );
+          }
+
+
+          //Otherwise, if the post has loaded:
+
+          //Grab the post data
+          Post post = snapshot.data!['post'];
+          bool hidden = snapshot.data!['hidden'];
+          bool saved = snapshot.data!['saved'];
+
+          IconData hideIcon = Icons.visibility_off_outlined;
+          if (hidden) {
+            hideIcon = Icons.visibility_off;
+          }
+
+          IconData saveIcon = Icons.bookmark_border;
+          if (saved) {
+            saveIcon = Icons.bookmark;
+          }
+
+          List<Widget> postActions = [];
+          if (!hidden) {
+            postActions.add(
+              IconButton(
+                  onPressed: (){
+                    setState(() {
+                      if (saved) {
+                        _savedModel.unsavePost(null, post);
+                      } else {
+                        _savedModel.savePost(null, post);
+                      }
+                    });
+                  },
+                  tooltip: "Save Post",
+                  icon: Icon(saveIcon)
+              ),
+            );
+          }
+
+          postActions.add(
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    if (hidden) {
+                      _savedModel.unsavePost(null, post);
+                    } else {
+                      _savedModel.hidePost(null, post);
+                    }
+                  });
+                },
+                tooltip: "Hide Post",
+                icon: Icon(hideIcon),
+              )
+          );
+
           return Scaffold(
             appBar: AppBar(
-              title: Text(snapshot.data!.title!),
-              actions: [
-                IconButton(
-                    onPressed: (){},
-                    icon: const Icon(Icons.bookmark_add_outlined)
-                ),
-                PopupMenuButton(
-                    itemBuilder: (context) {
-                      List<String> menuItems = [
-                        "Report",
-                        "Hide",
-                      ];
-                      return menuItems.map(
-                          (menuItem) => PopupMenuItem(
-                            value: menuItem,
-                            child: Text(menuItem),
-                          )
-                      ).toList();
-                    }
-                ),
-              ],
+              title: Text(post.title!),
+              actions: postActions,
             ),
-            body: _buildPost(snapshot.data!),
+            body: _buildPost(post),
           );
         },
     );

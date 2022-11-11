@@ -1,6 +1,8 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'package:group_project/constants.dart';
+import 'package:group_project/dev_tools/post_test_list.dart';
 import 'package:group_project/posts/add_post.dart';
 import 'package:group_project/views/map_view.dart';
 import 'package:group_project/views/post_view.dart';
@@ -15,25 +17,44 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Group Project',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: const DevPage(
-            title: 'DEVPAGE'
-        ), //TODO change to map in final release
-        routes: {
-          '/mapView': (context) {
-            return const MapView();
-          },
-          '/postView': (context) {
-            return const PostView();
-          },
-          '/addPost': (context) {
-            return const AddPost();
-          },
-        });
+    return FutureBuilder(
+      future: Firebase.initializeApp(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          print("Error initialising Firebase!");
+        }
+        if (snapshot.connectionState == ConnectionState.done) {
+          print ("Successfully connected to Firebase");
+          return MaterialApp(
+              title: 'Group Project',
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+              ),
+              home: const DevPage(
+                  title: 'DEVPAGE'
+              ), //TODO change to map in final release
+              routes: {
+                '/mapView': (context) {
+                  return const MapView();
+                },
+                '/postView': (context) {
+                  return const PostView();
+                },
+                '/addPost': (context) {
+                  return const AddPost();
+                },
+                //TODO: remove this page and associated files for later
+                '/devTestPostList': (context) {
+                  return const PostTestList();
+                },
+              },
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+
   }
 }
 
@@ -71,6 +92,10 @@ class _DevPageState extends State<DevPage> {
             ElevatedButton(
                 onPressed: () => Navigator.pushNamed(context, "/addPost"),
                 child: const Text("Go to add post screen")
+            ),
+            ElevatedButton(
+                onPressed: () => Navigator.pushNamed(context, "/devTestPostList"),
+                child: const Text("Go to post test list")
             ),
           ],
         ),

@@ -13,9 +13,4 @@ class DBUtils {
       version: 1,
     );
   }
-
-  static Future createTable() async {
-    final db = await init();
-    db!.execute('CREATE TABLE $savedPostTable(id INTEGER PRIMARY KEY, documentID STRING, hidden BOOL)');
-  }
 }

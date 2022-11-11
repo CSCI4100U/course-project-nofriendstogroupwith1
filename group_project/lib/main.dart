@@ -98,10 +98,6 @@ class _DevPageState extends State<DevPage> {
                 onPressed: () => Navigator.pushNamed(context, "/devTestPostList"),
                 child: const Text("Go to post test list")
             ),
-            ElevatedButton(
-                onPressed: () => DBUtils.createTable(),
-                child: const Text("Fix Local Database")
-            ),
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.

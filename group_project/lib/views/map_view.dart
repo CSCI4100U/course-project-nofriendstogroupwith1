@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'constants.dart';
+
+import 'package:group_project/constants.dart';
 
 class MapView extends StatefulWidget {
-  final String? title;
-  const MapView({Key? key, this.title}) : super(key: key);
+  const MapView({Key? key}) : super(key: key);
 
   @override
   State<MapView> createState() => _MapView();
@@ -14,11 +14,7 @@ class _MapView extends State<MapView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(actions: [
-        IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: Icon(Icons.arrow_back_sharp)),
-      ]), //TODO: Remove back button in final release
+      appBar: AppBar(), //Note: The back button is automatically added by Navigator.push()
       body: Stack(
         children: [
           FlutterMap(

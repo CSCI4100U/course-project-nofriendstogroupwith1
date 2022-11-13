@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:group_project/constants.dart';
-//import '../models/product.dart';
+
 import 'package:group_project/models/post.dart';
 import 'package:latlong2/latlong.dart';
-
-import 'package:group_project/models/post_model.dart';
 
 class AddPost extends StatefulWidget {
   const AddPost({Key? key}) : super(key: key);
@@ -78,14 +77,4 @@ class _AddPostState extends State<AddPost> {
     );
     await _model.insertPost(post_data);
   }
-
-
-
-
-
-
-
-
-
-
 }

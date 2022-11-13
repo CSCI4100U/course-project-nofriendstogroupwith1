@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'product.dart';
+//import '../models/product.dart';
+import 'package:group_project/models/post.dart';
 import 'package:latlong2/latlong.dart';
 
 class AddPost extends StatefulWidget {
@@ -20,7 +21,9 @@ class _AddPostState extends State<AddPost> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Container(
+      body: Center(
+        child: Column(
+        children: [
               TextField(
               decoration: InputDecoration(
                 labelText: "Title:"
@@ -47,24 +50,27 @@ class _AddPostState extends State<AddPost> {
               onChanged: (cap){
                 _caption = cap;
               },
-            ),
-            floatingActionButton: FloatingActionButton(
+            ),            
+          ],
+      ),
+      ),
+      floatingActionButton: FloatingActionButton(
             onPressed: _addToDb,
             tooltip: "Add",
             child: const Icon(Icons.add),
           ),
-      ),
+    
     );
   }
 
   Future _addToDb() async{
     print("Adding a new entry...");
-    Post post_data = <String,Object?>{
-      "title": _title,
-      "imageURL": _imageURL,
-      "location": LatLng(gp.latitude, gp.longitude),
-      "caption": _caption
-    };
+    Post post_data = Post (
+      title: _title,
+      imageURL: _imageURL,
+      location: LatLng(gp.latitude, gp.longitude),
+      caption: _caption
+    );
     await
     FirebaseFirestore.instance.collection('posts').doc().set(post_data);
     setState(() {

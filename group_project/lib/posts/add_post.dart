@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:group_project/constants.dart';
 //import '../models/product.dart';
 import 'package:group_project/models/post.dart';
 import 'package:latlong2/latlong.dart';
+
+import 'package:group_project/models/post_model.dart';
 
 class AddPost extends StatefulWidget {
   const AddPost({Key? key}) : super(key: key);
@@ -15,7 +18,9 @@ class AddPost extends StatefulWidget {
 class _AddPostState extends State<AddPost> {
   String? _title;
   String? _imageURL;
-  String? _caption;  
+  String? _caption;
+
+  PostModel _model = PostModel();
 
   @override
   Widget build(BuildContext context) {
@@ -68,14 +73,10 @@ class _AddPostState extends State<AddPost> {
     Post post_data = Post (
       title: _title,
       imageURL: _imageURL,
-      location: LatLng(gp.latitude, gp.longitude),
+      location: AppConstants.defaultLocation,
       caption: _caption
     );
-    await
-    FirebaseFirestore.instance.collection('posts').doc().set(post_data);
-    setState(() {
-      print("Added data: $post_data");
-    });
+    await _model.insertPost(post_data);
   }
 
 

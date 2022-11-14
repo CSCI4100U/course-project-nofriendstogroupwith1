@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:group_project/constants.dart';
 
 import 'package:group_project/models/post.dart';
+import 'package:group_project/models/post_model.dart';
 import 'package:latlong2/latlong.dart';
 
 class AddPost extends StatefulWidget {

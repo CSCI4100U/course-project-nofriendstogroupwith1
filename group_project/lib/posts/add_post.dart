@@ -9,7 +9,9 @@ import 'package:group_project/models/post_model.dart';
 import 'package:latlong2/latlong.dart';
 
 class AddPost extends StatefulWidget {
-  const AddPost({Key? key}) : super(key: key);
+  const AddPost({Key? key, this.imagePath}) : super(key: key);
+
+  final String? imagePath;
 
   @override
   State<AddPost> createState() => _AddPostState();

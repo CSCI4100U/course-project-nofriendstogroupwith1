@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
+import 'package:camera/camera.dart';
 import 'package:group_project/constants.dart';
 import 'package:group_project/dev_tools/post_test_list.dart';
 import 'package:group_project/models/db_utils.dart';
@@ -8,7 +8,11 @@ import 'package:group_project/posts/add_post.dart';
 import 'package:group_project/views/map_view.dart';
 import 'package:group_project/views/post_view.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  //get a list of all cameras on the device
+  final cameras = await availableCameras();
   runApp(const MyApp());
 }
 

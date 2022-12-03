@@ -44,6 +44,7 @@ dependencies:
   firebase_core:
   cloud_firestore:
   geopoint: ^1.0.0
+  camera: #^0.10.0+4
 
 dev_dependencies:
   flutter_test:

@@ -15,8 +15,8 @@ class MapView extends StatefulWidget {
 class _MapView extends State<MapView> {
   late List<Post> posts;
 
-  void _showPost(DocumentReference reference) {
-    //TODO move to post_view
+  void _showPost(Post post) {
+    Navigator.pushNamed(context, "/postView", arguments: post);
   }
 
   @override
@@ -64,17 +64,14 @@ class _MapView extends State<MapView> {
                       //post icons
                       for (int i = 0; i < snapshot.data!.length; i++)
                         Marker(
-                          height: 80,
-                          width: 80,
                           point: snapshot.data![i].location ??
                               AppConstants.defaultLocation,
                           builder: (context) => IconButton(
-                              onPressed: (() =>
-                                  _showPost(snapshot.data![i].reference!)),
+                              onPressed: (() => _showPost(snapshot.data![i])),
+                              iconSize: 45,
                               icon: Icon(
                                 Icons.location_pin,
                                 color: Colors.blue,
-                                size: 45,
                               )),
                         )
                     ])

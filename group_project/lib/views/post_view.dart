@@ -15,9 +15,10 @@ class PostView extends StatefulWidget {
 class _PostViewState extends State<PostView> {
   final PostModel _postModel = PostModel();
   final SavedModel _savedModel = SavedModel();
+  bool isArgumentLoaded = false;
 
   Widget _buildCaptionBox(String? caption) {
-    if (caption==null) {
+    if (caption == null) {
       return Container();
     }
     return Container(
@@ -32,13 +33,20 @@ class _PostViewState extends State<PostView> {
   }
 
   Widget _buildPost(Post post) {
+    late Widget image;
+
+    image = Image.network(post.imageURL!,
+        errorBuilder: ((context, error, stackTrace) {
+      return Text("404, image url not found.");
+    }));
+
     return ListView(
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(16.0)),
-            child: Image.network(post.imageURL!),
+            child: image,
           ),
         ),
         _buildCaptionBox(post.caption!),
@@ -46,9 +54,14 @@ class _PostViewState extends State<PostView> {
     );
   }
 
-  Future<Map<String, dynamic>> _getPostInfo() async {
-    List<Post> allposts = await _postModel.getAllPostsList();
-    Post post = allposts[0];
+  Future<Map<String, dynamic>> _getPostInfo(Post? argumentPost) async {
+    late Post post;
+    if (argumentPost == null) {
+      List<Post> allposts = await _postModel.getAllPostsList();
+      post = allposts[0];
+    } else {
+      post = argumentPost;
+    }
     bool saved = await _savedModel.isPostSaved(null, post.reference!.id);
     bool hidden = await _savedModel.isPostHidden(null, post.reference!.id);
     return {
@@ -60,88 +73,91 @@ class _PostViewState extends State<PostView> {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as Post?;
+    Post? argumentPost;
+    if (args != null && !isArgumentLoaded) {
+      argumentPost = args;
+      isArgumentLoaded = true;
+    }
+
     return FutureBuilder(
-        future: _getPostInfo(),
-        builder: (context, snapshot) {
-          //If the post hasn't loaded yet...
-          if (!snapshot.hasData) {
-            return Scaffold(
-              appBar: AppBar(),
-              body: const Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
+      future: _getPostInfo(argumentPost),
+      builder: (context, snapshot) {
+        //If the post hasn't loaded yet...
+        if (!snapshot.hasData) {
+          return Scaffold(
+            appBar: AppBar(),
+            body: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
 
-          if (snapshot.data!.isEmpty) {
-            return Scaffold(
-              appBar: AppBar(
-                title: const Text("No posts found"),
-              ),
-            );
-          }
+        if (snapshot.data!.isEmpty) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text("No posts found"),
+            ),
+          );
+        }
 
+        //Otherwise, if the post has loaded:
 
-          //Otherwise, if the post has loaded:
+        //Grab the post data
+        Post post = snapshot.data!['post'];
+        bool hidden = snapshot.data!['hidden'];
+        bool saved = snapshot.data!['saved'];
 
-          //Grab the post data
-          Post post = snapshot.data!['post'];
-          bool hidden = snapshot.data!['hidden'];
-          bool saved = snapshot.data!['saved'];
+        IconData hideIcon = Icons.visibility_off_outlined;
+        if (hidden) {
+          hideIcon = Icons.visibility_off;
+        }
 
-          IconData hideIcon = Icons.visibility_off_outlined;
-          if (hidden) {
-            hideIcon = Icons.visibility_off;
-          }
+        IconData saveIcon = Icons.bookmark_border;
+        if (saved) {
+          saveIcon = Icons.bookmark;
+        }
 
-          IconData saveIcon = Icons.bookmark_border;
-          if (saved) {
-            saveIcon = Icons.bookmark;
-          }
-
-          List<Widget> postActions = [];
-          if (!hidden) {
-            postActions.add(
-              IconButton(
-                  onPressed: (){
-                    setState(() {
-                      if (saved) {
-                        _savedModel.unsavePost(null, post);
-                      } else {
-                        _savedModel.savePost(null, post);
-                      }
-                    });
-                  },
-                  tooltip: "Save Post",
-                  icon: Icon(saveIcon)
-              ),
-            );
-          }
-
+        List<Widget> postActions = [];
+        if (!hidden) {
           postActions.add(
-              IconButton(
+            IconButton(
                 onPressed: () {
                   setState(() {
-                    if (hidden) {
+                    if (saved) {
                       _savedModel.unsavePost(null, post);
                     } else {
-                      _savedModel.hidePost(null, post);
+                      _savedModel.savePost(null, post);
                     }
                   });
                 },
-                tooltip: "Hide Post",
-                icon: Icon(hideIcon),
-              )
+                tooltip: "Save Post",
+                icon: Icon(saveIcon)),
           );
+        }
 
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(post.title!),
-              actions: postActions,
-            ),
-            body: _buildPost(post),
-          );
-        },
+        postActions.add(IconButton(
+          onPressed: () {
+            setState(() {
+              if (hidden) {
+                _savedModel.unsavePost(null, post);
+              } else {
+                _savedModel.hidePost(null, post);
+              }
+            });
+          },
+          tooltip: "Hide Post",
+          icon: Icon(hideIcon),
+        ));
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(post.title!),
+            actions: postActions,
+          ),
+          body: _buildPost(post),
+        );
+      },
     );
   }
 }

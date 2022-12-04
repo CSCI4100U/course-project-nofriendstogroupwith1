@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:group_project/models/post.dart';
 import 'package:group_project/models/post_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:group_project/constants.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 
 class MapView extends StatefulWidget {
   const MapView({Key? key}) : super(key: key);
@@ -14,17 +15,37 @@ class MapView extends StatefulWidget {
 
 class _MapView extends State<MapView> {
   late List<Post> posts;
+  final mapController = MapController();
+  bool init = false;
 
   void _showPost(Post post) {
     Navigator.pushNamed(context, "/postView", arguments: post);
   }
 
-  void _centerOverUser() {}
+  void _centerOverUser() async {
+    Position pos = await Geolocator.getCurrentPosition();
+    mapController.move(LatLng(pos.latitude, pos.longitude), mapController.zoom);
+  }
 
   void _createPost() {}
 
   @override
   Widget build(BuildContext context) {
+    //Get current gps position for map initialization
+    if (!init) {
+      Geolocator.getCurrentPosition().then((value) {
+        mapController.move(
+            LatLng(value.latitude, value.longitude), mapController.zoom);
+      });
+      init = true;
+    }
+
+    Geolocator.isLocationServiceEnabled().then((value) => null);
+    Geolocator.requestPermission().then((value) => null);
+    Geolocator.checkPermission().then((LocationPermission permission) {
+      //print("Check Location Permission: $permission");
+    });
+
     return Scaffold(
         appBar:
             AppBar(), //Note: The back button is automatically added by Navigator.push()
@@ -49,6 +70,7 @@ class _MapView extends State<MapView> {
 
                   //Main screeen
                   return FlutterMap(
+                    mapController: mapController,
                     options: MapOptions(
                       minZoom: 5,
                       maxZoom: 18,

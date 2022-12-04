@@ -27,10 +27,18 @@ class _MapView extends State<MapView> {
     mapController.move(LatLng(pos.latitude, pos.longitude), mapController.zoom);
   }
 
-  void _createPost() {}
+  void _createPost() {
+    Navigator.pushNamed(context, "/addPost");
+  }
 
   @override
   Widget build(BuildContext context) {
+    Geolocator.isLocationServiceEnabled().then((value) => null);
+    Geolocator.requestPermission().then((value) => null);
+    Geolocator.checkPermission().then((LocationPermission permission) {
+      //print("Check Location Permission: $permission");
+    });
+
     //Get current gps position for map initialization
     if (!init) {
       Geolocator.getCurrentPosition().then((value) {
@@ -39,12 +47,6 @@ class _MapView extends State<MapView> {
       });
       init = true;
     }
-
-    Geolocator.isLocationServiceEnabled().then((value) => null);
-    Geolocator.requestPermission().then((value) => null);
-    Geolocator.checkPermission().then((LocationPermission permission) {
-      //print("Check Location Permission: $permission");
-    });
 
     return Scaffold(
         appBar:

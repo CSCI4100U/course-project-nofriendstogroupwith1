@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:group_project/constants.dart';
 
+import 'package:geolocator/geolocator.dart';
 import 'package:group_project/models/post.dart';
 import 'package:group_project/models/post_model.dart';
 import 'package:latlong2/latlong.dart';
@@ -24,58 +25,58 @@ class _AddPostState extends State<AddPost> {
 
   @override
   Widget build(BuildContext context) {
+    Geolocator.isLocationServiceEnabled().then((value) => null);
+    Geolocator.requestPermission().then((value) => null);
+    Geolocator.checkPermission().then((LocationPermission permission) {
+      //print("Check Location Permission: $permission");
+    });
+
     return Scaffold(
       appBar: AppBar(),
       body: Center(
         child: Column(
-        children: [
-              TextField(
-              decoration: InputDecoration(
-                labelText: "Title:"
-              ),
+          children: [
+            TextField(
+              decoration: InputDecoration(labelText: "Title:"),
               style: TextStyle(fontSize: 30),
-              onChanged: (post_title){
+              onChanged: (post_title) {
                 _title = post_title;
-                },
+              },
             ),
             TextField(
-              decoration: InputDecoration(
-                  labelText: "imageURL"
-              ),
+              decoration: InputDecoration(labelText: "imageURL"),
               style: TextStyle(fontSize: 30),
-              onChanged: (post_URL){
+              onChanged: (post_URL) {
                 _imageURL = post_URL;
               },
             ),
             TextField(
-              decoration: InputDecoration(
-                  labelText: "Caption"
-              ),
+              decoration: InputDecoration(labelText: "Caption"),
               style: TextStyle(fontSize: 30),
-              onChanged: (cap){
+              onChanged: (cap) {
                 _caption = cap;
               },
-            ),            
+            ),
           ],
-      ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
-            onPressed: _addToDb,
-            tooltip: "Add",
-            child: const Icon(Icons.add),
-          ),
-    
+        onPressed: _addToDb,
+        tooltip: "Add",
+        child: const Icon(Icons.add),
+      ),
     );
   }
 
-  Future _addToDb() async{
+  Future _addToDb() async {
     print("Adding a new entry...");
-    Post post_data = Post (
-      title: _title,
-      imageURL: _imageURL,
-      location: AppConstants.defaultLocation,
-      caption: _caption
-    );
+    Position pos = await Geolocator.getCurrentPosition();
+
+    Post post_data = Post(
+        title: _title,
+        imageURL: _imageURL,
+        location: LatLng(pos.latitude, pos.longitude),
+        caption: _caption);
     await _model.insertPost(post_data);
   }
 }

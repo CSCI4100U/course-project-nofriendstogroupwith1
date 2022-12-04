@@ -19,67 +19,79 @@ class _MapView extends State<MapView> {
     Navigator.pushNamed(context, "/postView", arguments: post);
   }
 
+  void _centerOverUser() {}
+
+  void _createPost() {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          AppBar(), //Note: The back button is automatically added by Navigator.push()
-      body: Stack(
-        children: [
-          FutureBuilder(
-              future: PostModel().getAllPostsList(),
-              builder: ((context, snapshot) {
-                if (!snapshot.hasData) {
-                  //Loading screen
-                  return Container(
-                      alignment: Alignment.center,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: const [
-                          CircularProgressIndicator(),
-                          Text("Loading Posts")
-                        ],
-                      ));
-                }
+        appBar:
+            AppBar(), //Note: The back button is automatically added by Navigator.push()
+        body: Stack(
+          children: [
+            FutureBuilder(
+                future: PostModel().getAllPostsList(),
+                builder: ((context, snapshot) {
+                  if (!snapshot.hasData) {
+                    //Loading screen
+                    return Container(
+                        alignment: Alignment.center,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: const [
+                            CircularProgressIndicator(),
+                            Text("Loading Posts")
+                          ],
+                        ));
+                  }
 
-                //Main screeen
-                return FlutterMap(
-                  options: MapOptions(
-                    minZoom: 5,
-                    maxZoom: 18,
-                    zoom: 13,
-                    center: AppConstants.defaultLocation,
-                  ),
-                  layers: [
-                    TileLayerOptions(
-                      urlTemplate:
-                          "https://api.mapbox.com/styles/v1/alexnayl/{mapStyleId}/tiles/256/{z}/{x}/{y}@2x?access_token={accessToken}",
-                      additionalOptions: {
-                        'mapStyleId': AppConstants.mapBoxStyleId,
-                        'accessToken': AppConstants.mapBoxAccessToken,
-                      },
+                  //Main screeen
+                  return FlutterMap(
+                    options: MapOptions(
+                      minZoom: 5,
+                      maxZoom: 18,
+                      zoom: 13,
+                      center: AppConstants.defaultLocation,
                     ),
-                    MarkerLayerOptions(rotate: true, markers: [
-                      //post icons
-                      for (int i = 0; i < snapshot.data!.length; i++)
-                        Marker(
-                          point: snapshot.data![i].location ??
-                              AppConstants.defaultLocation,
-                          builder: (context) => IconButton(
-                              onPressed: (() => _showPost(snapshot.data![i])),
-                              iconSize: 45,
-                              icon: Icon(
-                                Icons.location_pin,
-                                color: Colors.blue,
-                              )),
-                        )
-                    ])
-                  ],
-                );
-              }))
-        ],
-      ),
-    );
+                    layers: [
+                      TileLayerOptions(
+                        urlTemplate:
+                            "https://api.mapbox.com/styles/v1/alexnayl/{mapStyleId}/tiles/256/{z}/{x}/{y}@2x?access_token={accessToken}",
+                        additionalOptions: {
+                          'mapStyleId': AppConstants.mapBoxStyleId,
+                          'accessToken': AppConstants.mapBoxAccessToken,
+                        },
+                      ),
+                      MarkerLayerOptions(rotate: true, markers: [
+                        //post icons
+                        for (int i = 0; i < snapshot.data!.length; i++)
+                          Marker(
+                            point: snapshot.data![i].location ??
+                                AppConstants.defaultLocation,
+                            builder: (context) => IconButton(
+                                onPressed: (() => _showPost(snapshot.data![i])),
+                                iconSize: 45,
+                                icon: const Icon(
+                                  Icons.location_pin,
+                                  color: Colors.blue,
+                                )),
+                          )
+                      ])
+                    ],
+                  );
+                }))
+          ],
+        ),
+        floatingActionButton: Wrap(children: [
+          FloatingActionButton(
+            heroTag: "center",
+            onPressed: _centerOverUser,
+            child: Icon(Icons.gps_fixed_rounded),
+          ),
+          FloatingActionButton(
+              heroTag: "add", onPressed: _createPost, child: Icon(Icons.add))
+        ]));
   }
 }

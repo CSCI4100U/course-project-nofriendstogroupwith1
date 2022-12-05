@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,6 +13,8 @@ import 'package:latlong2/latlong.dart';
 
 import 'dart:io';
 import 'dart:async';
+
+import "package:uuid/uuid.dart";
 
 class AddPost extends StatefulWidget {
   const AddPost({Key? key}) : super(key: key);
@@ -31,7 +34,6 @@ class _AddPostState extends State<AddPost> {
 
   @override
   Widget build(BuildContext context) {
-    var y;
     return Scaffold(
       appBar: AppBar(),
       body: Center(
@@ -45,15 +47,6 @@ class _AddPostState extends State<AddPost> {
               onChanged: (post_title){
                 _title = post_title;
                 },
-            ),
-            TextField(
-              decoration: InputDecoration(
-                  labelText: "imageURL"
-              ),
-              style: TextStyle(fontSize: 30),
-              onChanged: (post_URL){
-                _imageURL = post_URL;
-              },
             ),
             TextField(
               decoration: InputDecoration(
@@ -85,15 +78,35 @@ class _AddPostState extends State<AddPost> {
     );
   }
 
-  Future _addToDb() async{
+  Future _addToDb() async {
     print("Adding a new entry...");
-    Post post_data = Post (
-      title: _title,
-      imageURL: _imageURL,
-      location: AppConstants.defaultLocation,
-      caption: _caption
-    );
-    await _model.insertPost(post_data);
+    final uuid = Uuid();
+    _imageURL = await uploadPhoto(uuid.v1(), File(_imagePath!));
+    if (_imageURL!=null) {
+      print("Image upload successful!");
+      Post post_data = Post(
+          title: _title,
+          imageURL: _imageURL,
+          location: AppConstants.defaultLocation,
+          caption: _caption
+      );
+      await _model.insertPost(post_data);
+    } else {
+      print("Failed to upload image!");
+    }
+  }
+
+  Future<String?> uploadPhoto(String name, File file) async {
+    final storageRef = FirebaseStorage.instance.ref();
+    final photoRef = storageRef.child("images/$name.jpg");
+
+    try {
+      await photoRef.putFile(file);
+
+      return photoRef.getDownloadURL();
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> takepic() async {
@@ -121,7 +134,6 @@ class _AddPostState extends State<AddPost> {
     }
 
     setState(() {
-
     });
   }
 

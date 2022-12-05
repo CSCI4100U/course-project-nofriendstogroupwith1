@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
@@ -19,6 +21,9 @@ class _MapView extends State<MapView> {
   late List<Post> posts;
   final MapController mapController = MapController();
   var zoomValue = 14.0;
+
+  static const double maxZoom = 18;
+  static const double minZoom = 5;
 
   final PostModel _postModel = PostModel();
   final SavedModel _savedModel = SavedModel();
@@ -88,8 +93,8 @@ class _MapView extends State<MapView> {
               return FlutterMap(
                 mapController: mapController,
                 options: MapOptions(
-                  minZoom: 5,
-                  maxZoom: 18,
+                  minZoom: minZoom,
+                  maxZoom: maxZoom,
                   zoom: zoomValue,
                   center: AppConstants.defaultLocation,
                 ),
@@ -139,7 +144,7 @@ class _MapView extends State<MapView> {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(shape: const CircleBorder()),
             onPressed: () {
-              zoomValue += 0.2;
+              zoomValue = min(zoomValue+0.2, maxZoom);
               mapController.move(AppConstants.defaultLocation, zoomValue);
             },
             child: const Icon(Icons.zoom_in),
@@ -153,7 +158,7 @@ class _MapView extends State<MapView> {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(shape: const CircleBorder()),
             onPressed: () {
-              zoomValue -= 0.2;
+              zoomValue = max(zoomValue-0.2, minZoom);
               mapController.move(AppConstants.defaultLocation, zoomValue);
             },
             child: const Icon(Icons.zoom_out),

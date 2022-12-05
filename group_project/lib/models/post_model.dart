@@ -11,9 +11,9 @@ class PostModel {
   //
   //  Add a new post to Firestore
   //
-  Future insertPost(Post post) async {
-    await FirebaseFirestore.instance.collection(AppConstants.postCollectionName)
-        .doc().set(post.toMap());
+  Future<DocumentReference<Map<String, dynamic>>> insertPost(Post post) async {
+    return await FirebaseFirestore.instance.collection(AppConstants.postCollectionName)
+        .add(post.toMap());
   }
 
   //
@@ -47,7 +47,9 @@ class PostModel {
     if (postData.data() is Map<String, dynamic?>) {
       return Post.fromMap(postData.data(), reference: postData.reference);
     } else {
-      return Post(title: "[Deleted Post]", caption: "[Deleted]", imageURL: "", location: LatLng(0,0));
+      Post post = Post(title: "[Deleted Post]", caption: "[Deleted]", imageURL: "https://firebasestorage.googleapis.com/v0/b/group-project-3ef50.appspot.com/o/images%2Ferror.jpg?alt=media&token=dbf2d472-2c4b-4623-b4c2-5001fff078ff", location: LatLng(0,0));
+      post.documentID = documentID;
+      return post;
     }
   }
 }

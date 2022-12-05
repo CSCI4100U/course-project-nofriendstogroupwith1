@@ -17,8 +17,8 @@ class _SettingsViewState extends State<SettingsView> {
   String _language = "en-US";
 
   Future<void> getUpdatedSettings() async {
-    _autoSave = await _settingsModel.getBoolSetting("autoSave") ?? true;
-    _language = await _settingsModel.getStringSetting("language") ?? 'en-US';
+    _autoSave = await _settingsModel.getBoolSetting(SettingsModel.settingAutoSave) ?? true;
+    _language = await _settingsModel.getStringSetting(SettingsModel.settingLanguage) ?? 'en-US';
   }
 
   Widget _buildSetting({String label="", required Widget child}) {
@@ -65,14 +65,14 @@ class _SettingsViewState extends State<SettingsView> {
               onChanged: (value){
                 setState((){
                   _autoSave=value;
-                  _settingsModel.setBoolSetting(name: 'autoSave', value: value);
+                  _settingsModel.setBoolSetting(name: SettingsModel.settingAutoSave, value: value);
                 });
               }
             ),
 
             _buildSettingHeader("Localization"),
             _buildSetting(
-              label: "Language",
+              label: SettingsModel.settingLanguage,
               child: DropdownButton(
                 value: _language,
                 items: const [
@@ -93,7 +93,7 @@ class _SettingsViewState extends State<SettingsView> {
                   setState((){
                     if (value!=null) {
                       _language = value;
-                      _settingsModel.setStringSetting(name: 'language', value: value);
+                      _settingsModel.setStringSetting(name: SettingsModel.settingLanguage, value: value);
                     }
                   });
                 }

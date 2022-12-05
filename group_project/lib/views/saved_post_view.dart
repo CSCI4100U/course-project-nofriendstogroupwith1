@@ -34,11 +34,8 @@ class _SavedPostViewState extends State<SavedPostView> with SingleTickerProvider
     _tabController.dispose();
   }
 
-  Future<void> _showPost(Post post) async {
-    await Navigator.pushNamed(context, "/postView", arguments: post);
-    setState(() {
-
-    });
+  void _showPost(Post post) {
+    Navigator.pushNamed(context, "/postView", arguments: post).then((value) => setState((){}));
   }
 
   Widget _buildPostTile(Post post) =>

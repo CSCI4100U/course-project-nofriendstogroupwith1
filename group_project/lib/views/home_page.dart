@@ -28,6 +28,18 @@ class _HomePageState extends State<HomePage> {
     await Navigator.pushNamed(context, "/addPost");
   }
 
+  void navigate(int page) {
+    if (page>=0 && page<=4) {
+      //Make sure the page exists
+      _page = page;
+      _controller.animateToPage(
+        _page,
+        curve: Curves.decelerate,
+        duration: const Duration(milliseconds: 500),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,21 +96,24 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
         onTap: (value) {
-          //Add post feature
-          ///Important: Make sure this is equal to the index of the 'add' button.
-          if (value == 2) {
-            _createPost();
-          } else {
-            //Navigate like normal
-            setState(() {
-              _page = value;
-            });
-            _controller.animateToPage(
-              _page,
-              curve: Curves.decelerate,
-              duration: const Duration(milliseconds: 500),
-            );
-          }
+
+            //Add post feature
+            ///Important: Make sure this is equal to the index of the 'add' button.
+            if (value==2) {
+              //Temporarily jump to the empty "page 2" (setstate isn't sufficient to refresh the pageview)
+                int temp = _page;
+                _controller.jumpToPage(2);
+                _createPost().then((value) => setState((){
+                  _page = temp;
+                  _controller.jumpToPage(temp);
+                }));
+            } else {
+              //Navigate like normal
+              setState((){
+                navigate(value);
+              });
+
+            }
         },
       ),
     );

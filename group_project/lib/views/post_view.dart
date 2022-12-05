@@ -37,10 +37,12 @@ class _PostViewState extends State<PostView> {
   Widget _buildPost(Post post) {
     late Widget image;
 
+    print("Getting image");
     image = Image.network(post.imageURL!,
-        errorBuilder: ((context, error, stackTrace) {
-      return Text("Network Error: Image not found.");
-    }));
+        errorBuilder: ((context, error, stackTrace)
+          => const Text("Network Error: Image not found.")
+    ));
+    print("image done");
 
     return ListView(
       children: [
@@ -51,7 +53,7 @@ class _PostViewState extends State<PostView> {
             child: image,
           ),
         ),
-        _buildCaptionBox(post.caption!),
+        _buildCaptionBox(post.caption??"[Missing Caption]"),
       ],
     );
   }
@@ -64,12 +66,19 @@ class _PostViewState extends State<PostView> {
     } else {
       post = argumentPost;
     }
-    bool saved = await _savedModel.isPostSaved(null, post.reference!.id);
-    bool hidden = await _savedModel.isPostHidden(null, post.reference!.id);
+
+    bool deleted = post.reference==null;
+    bool? saved;
+    bool? hidden;
+    if (!deleted) {
+      saved = await _savedModel.isPostSaved(null, post.reference!.id);
+      hidden = await _savedModel.isPostHidden(null, post.reference!.id);
+    }
     return {
       'post': post,
-      'saved': saved,
-      'hidden': hidden,
+      'saved': saved??true,
+      'hidden': hidden??true,
+      'deleted': deleted,
     };
   }
 
@@ -103,6 +112,7 @@ class _PostViewState extends State<PostView> {
 
         //Grab the post data
         Post post = snapshot.data!['post'];
+        bool deleted = snapshot.data!['deleted'];
         bool hidden = snapshot.data!['hidden'];
         bool saved = snapshot.data!['saved'];
 
@@ -123,7 +133,12 @@ class _PostViewState extends State<PostView> {
                 onPressed: () {
                   setState(() {
                     if (saved) {
-                      _savedModel.unsavePost(null, post);
+                      if (deleted) {
+                        _savedModel.unsavePost(null, post)
+                            .then((value) => Navigator.of(context).pop());
+                      } else {
+                        _savedModel.unsavePost(null, post);
+                      }
                     } else {
                       _savedModel.savePost(null, post);
                     }
@@ -138,7 +153,12 @@ class _PostViewState extends State<PostView> {
           onPressed: () {
             setState(() {
               if (hidden) {
-                _savedModel.unsavePost(null, post);
+                if (deleted) {
+                  _savedModel.unsavePost(null, post)
+                      .then((value) => Navigator.of(context).pop());
+                } else {
+                  _savedModel.unsavePost(null, post);
+                }
               } else {
                 _savedModel.hidePost(null, post);
               }
@@ -150,7 +170,7 @@ class _PostViewState extends State<PostView> {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(post.title!),
+            title: Text(post.title??"[Missing Title]"),
             actions: postActions,
           ),
           body: _buildPost(post),

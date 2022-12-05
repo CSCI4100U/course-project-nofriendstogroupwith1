@@ -108,6 +108,7 @@ class _AddPostState extends State<AddPost> {
     }
   }
 
+// this method is used to confirm information inputed by the user before creating the post
   Future userConfirmation() async {
     var confirmation = await showDialog(
         context: context,

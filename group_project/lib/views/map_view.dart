@@ -40,6 +40,15 @@ class _MapView extends State<MapView> {
       try {
         mapController.move(
             LatLng(pos.latitude, pos.longitude), mapController.zoom);
+
+        // snackbar to tell user the map is centered
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text(
+            "Map Centerd",
+            style: TextStyle(fontSize: 14),
+          )),
+        );
       } on StateError catch (e) {
         print("Navigated away before recenter!");
       }
@@ -135,7 +144,9 @@ class _MapView extends State<MapView> {
           width: 60,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(shape: const CircleBorder()),
-            onPressed: _centerOverUser,
+            onPressed: () {
+              _centerOverUser();
+            },
             child: const Icon(Icons.gps_fixed_rounded),
           ),
         ),

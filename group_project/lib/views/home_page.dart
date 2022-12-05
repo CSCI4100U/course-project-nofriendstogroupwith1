@@ -24,7 +24,6 @@ class _HomePageState extends State<HomePage> {
     "Saved Posts",
   ];
 
-
   Future<void> _createPost() async {
     await Navigator.pushNamed(context, "/addPost");
   }
@@ -37,11 +36,10 @@ class _HomePageState extends State<HomePage> {
         actions: [
           //TODO: Dev page access: remove along with dev page.
           IconButton(
-              onPressed: (){
+              onPressed: () {
                 Navigator.pushNamed(context, "/dev");
               },
-              icon: const Icon(Icons.developer_mode)
-          ),
+              icon: const Icon(Icons.developer_mode)),
         ],
       ),
       body: PageView(
@@ -57,50 +55,50 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _page,
-          type: BottomNavigationBarType.fixed,
-          items: const [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.map_outlined),
-                activeIcon: Icon(Icons.map),
-                label: "Map",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart_outlined),
-              activeIcon: Icon(Icons.bar_chart),
-              label: "Post Stats",
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.add),
-                label: "Add Post",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings_outlined),
-              activeIcon: Icon(Icons.settings),
-              label: "Settings",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.bookmarks_outlined),
-              activeIcon: Icon(Icons.bookmarks),
-              label: "Saved Posts",
-            ),
-          ],
+        currentIndex: _page,
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.map_outlined),
+            activeIcon: Icon(Icons.map),
+            label: "Map",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart_outlined),
+            activeIcon: Icon(Icons.bar_chart),
+            label: "Post Stats",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add),
+            label: "Add Post",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings_outlined),
+            activeIcon: Icon(Icons.settings),
+            label: "Settings",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bookmarks_outlined),
+            activeIcon: Icon(Icons.bookmarks),
+            label: "Saved Posts",
+          ),
+        ],
         onTap: (value) {
-            //Add post feature
-            ///Important: Make sure this is equal to the index of the 'add' button.
-            if (value==2) {
-              _createPost();
-            } else {
-              //Navigate like normal
-              setState((){
-                _page = value;
-              });
-              _controller.animateToPage(
-                _page,
-                curve: Curves.decelerate,
-                duration: const Duration(milliseconds: 500),
-              );
-            }
+          //Add post feature
+          ///Important: Make sure this is equal to the index of the 'add' button.
+          if (value == 2) {
+            _createPost();
+          } else {
+            //Navigate like normal
+            setState(() {
+              _page = value;
+            });
+            _controller.animateToPage(
+              _page,
+              curve: Curves.decelerate,
+              duration: const Duration(milliseconds: 500),
+            );
+          }
         },
       ),
     );

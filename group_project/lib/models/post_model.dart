@@ -41,4 +41,13 @@ class PostModel {
             (document) => Post.fromMap(document, reference: document.reference)
     ).toList();
   }
+
+  Future< Post > getPostByReference(String documentID) async {
+    var postData = await FirebaseFirestore.instance.collection(AppConstants.postCollectionName).doc(documentID).get();
+    if (postData.data() is Map<String, dynamic?>) {
+      return Post.fromMap(postData.data(), reference: postData.reference);
+    } else {
+      return Post(title: "[Deleted Post]", caption: "[Deleted]", imageURL: "", location: LatLng(0,0));
+    }
+  }
 }

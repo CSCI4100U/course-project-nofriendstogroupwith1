@@ -82,7 +82,7 @@ class SavedModel {
     final List<Map<String, Object?>> maps = await db!.query(
       DBUtils.savedPostTable,
       where: 'hidden = ?',
-      whereArgs: [false],
+      whereArgs: [true],
     );
     
     return _mapsToSaved(maps);

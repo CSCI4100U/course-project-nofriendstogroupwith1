@@ -53,7 +53,7 @@ class _MapView extends State<MapView> {
 
     for (int i = 0; i < allPosts.length; ++i) {
       if (await _savedModel.isPostHidden(null, allPosts[i].reference!.id)) {
-        //allPosts.removeAt(i);
+        allPosts.removeAt(i);
       }
     }
 
@@ -130,21 +130,12 @@ class _MapView extends State<MapView> {
                 height: 60,
                 width: 60,
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(shape: CircleBorder()),
+                  style: ElevatedButton.styleFrom(shape: const CircleBorder()),
                   onPressed: _centerOverUser,
                   child: const Icon(Icons.gps_fixed_rounded),
                 )
             ),
           ],
         );
-        //floatingActionButton: Wrap(children: [
-        //  FloatingActionButton(
-        //    heroTag: "center",
-        //    onPressed: _centerOverUser,
-        //    child: const Icon(Icons.gps_fixed_rounded),
-        //  ),
-        //  FloatingActionButton(
-        //      heroTag: "add", onPressed: _createPost, child: Icon(Icons.add))
-        //])
   }
 }

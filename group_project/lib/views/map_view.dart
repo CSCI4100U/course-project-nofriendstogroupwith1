@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
@@ -33,24 +34,25 @@ class _MapView extends State<MapView> {
     setState(() {});
   }
 
-  void _centerOverUser() async {
-    Position pos = await Geolocator.getCurrentPosition();
-
-    //Make sure it doesn't still try to center if you've already navigated away.
-    bool? done = await mapController.mapEventSink.done;
-    if (done != null && done) {
-      mapController.move(
-          LatLng(pos.latitude, pos.longitude), mapController.zoom);
-    }
+  void _centerOverUser() {
+    //Position pos = await
+    Geolocator.getCurrentPosition().then(
+            (pos) {
+              try {
+                mapController.move(
+                    LatLng(pos.latitude, pos.longitude), mapController.zoom);
+              } on StateError catch (e) {
+                print("Navigated away before recenter!");
+              }
+            }
+    );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _centerOverUser();
-  }
+  late Position currentPosition;
 
   Future<List<Post>> _getAllVisiblePosts() async {
+    currentPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+
     List<Post> allPosts = await _postModel.getAllPostsList();
 
     for (int i = 0; i < allPosts.length; ++i) {
@@ -97,7 +99,7 @@ class _MapView extends State<MapView> {
                   minZoom: minZoom,
                   maxZoom: maxZoom,
                   zoom: zoomValue,
-                  center: AppConstants.defaultLocation,
+                  center: LatLng(currentPosition!.latitude, currentPosition!.longitude),
                 ),
                 layers: [
                   TileLayerOptions(

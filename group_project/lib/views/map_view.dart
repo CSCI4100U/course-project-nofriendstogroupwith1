@@ -36,22 +36,21 @@ class _MapView extends State<MapView> {
 
   void _centerOverUser() {
     //Position pos = await
-    Geolocator.getCurrentPosition().then(
-            (pos) {
-              try {
-                mapController.move(
-                    LatLng(pos.latitude, pos.longitude), mapController.zoom);
-              } on StateError catch (e) {
-                print("Navigated away before recenter!");
-              }
-            }
-    );
+    Geolocator.getCurrentPosition().then((pos) {
+      try {
+        mapController.move(
+            LatLng(pos.latitude, pos.longitude), mapController.zoom);
+      } on StateError catch (e) {
+        print("Navigated away before recenter!");
+      }
+    });
   }
 
   late Position currentPosition;
 
   Future<List<Post>> _getAllVisiblePosts() async {
-    currentPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+    currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
 
     List<Post> allPosts = await _postModel.getAllPostsList();
 
@@ -99,7 +98,8 @@ class _MapView extends State<MapView> {
                   minZoom: minZoom,
                   maxZoom: maxZoom,
                   zoom: zoomValue,
-                  center: LatLng(currentPosition!.latitude, currentPosition!.longitude),
+                  center: LatLng(
+                      currentPosition!.latitude, currentPosition!.longitude),
                 ),
                 layers: [
                   TileLayerOptions(
@@ -147,7 +147,7 @@ class _MapView extends State<MapView> {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(shape: const CircleBorder()),
             onPressed: () {
-              zoomValue = min(zoomValue+0.2, maxZoom);
+              zoomValue = min(zoomValue += 0.2, maxZoom);
               mapController.move(AppConstants.defaultLocation, zoomValue);
             },
             child: const Icon(Icons.zoom_in),
@@ -161,7 +161,7 @@ class _MapView extends State<MapView> {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(shape: const CircleBorder()),
             onPressed: () {
-              zoomValue = max(zoomValue-0.2, minZoom);
+              zoomValue = max(zoomValue -= 0.2, minZoom);
               mapController.move(AppConstants.defaultLocation, zoomValue);
             },
             child: const Icon(Icons.zoom_out),

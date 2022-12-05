@@ -153,7 +153,7 @@ class _MapView extends State<MapView> {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(shape: const CircleBorder()),
             onPressed: () {
-              zoomValue -= 0.2;
+              zoomValue -= 0.1;
               mapController.move(AppConstants.defaultLocation, zoomValue);
             },
             child: const Icon(Icons.zoom_out),

@@ -131,7 +131,7 @@ class _AddPostState extends State<AddPost> {
           );
         });
 
-    print("User confirmation of post: $confirmation");
+    print("User confirmation of ost: $confirmation");
 
     if (confirmation == true) {
       _addToDb();

@@ -14,9 +14,7 @@ import 'dart:io';
 import 'dart:async';
 
 class AddPost extends StatefulWidget {
-  const AddPost({Key? key, this.imagePath}) : super(key: key);
-
-  final String? imagePath;
+  const AddPost({Key? key}) : super(key: key);
 
   @override
   State<AddPost> createState() => _AddPostState();
@@ -26,6 +24,8 @@ class _AddPostState extends State<AddPost> {
   String? _title;
   String? _imageURL;
   String? _caption;
+
+  String? _imagePath;
 
   PostModel _model = PostModel();
 
@@ -65,9 +65,9 @@ class _AddPostState extends State<AddPost> {
               },
             ),
             Container( 
-                child: widget.imagePath != null?
-                Image.file(File(widget.imagePath!))://Text("No pic"):
-                Text("yes pic") //Image.file(File(widget.imagePath!)),
+                child: _imagePath != null?
+                Image.file(File(_imagePath!))://Text("Yes pic"):
+                Text("no pic") //Image.file(File(widget.imagePath!)),
             ),
             ElevatedButton(
                 onPressed: takepic,
@@ -95,22 +95,35 @@ class _AddPostState extends State<AddPost> {
     );
     await _model.insertPost(post_data);
   }
-}
 
-Future<void> takepic() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  //get a list of all cameras on the device
-  final cameras = await availableCameras();
-  // Get a specific camera from the list of available cameras.
-  //final firstCamera = cameras.first;
+  Future<void> takepic() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    //get a list of all cameras on the device
+    final cameras = await availableCameras();
+    // Get a specific camera from the list of available cameras.
+    //final firstCamera = cameras.first;
 
-  //runApp(Camera(cameras: cameras,));
-  runApp(MaterialApp(
+    //runApp(Camera(cameras: cameras,));
+    /*runApp(MaterialApp(
       theme: ThemeData.dark(),
       home: Camera(
       //pass the cameras list to the next widget
         cameras: cameras,
       ),
     )
-  );
+  );*/
+    var result = await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return Camera(cameras: cameras);
+    }));
+
+    if (result!=null && result is String) {
+      _imagePath = result;
+    }
+
+    setState(() {
+
+    });
+  }
+
 }
+

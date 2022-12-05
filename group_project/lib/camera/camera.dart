@@ -85,13 +85,7 @@ class _CameraState extends State<Camera> {
             if(!mounted) return;
 
             //if the picture was taken, display on a new screen
-            await Navigator.of(context).push(
-              MaterialPageRoute(
-                  builder: (context) => AddPost(
-                    imagePath: image.path
-                  )
-              ),
-            );
+            Navigator.of(context).pop(image.path);
 
           } catch(e){
             print(e);

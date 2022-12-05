@@ -4,6 +4,7 @@ import 'package:group_project/models/post.dart';
 import 'package:group_project/models/post_model.dart';
 import 'package:group_project/constants.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:group_project/models/saved_model.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapView extends StatefulWidget {
@@ -18,8 +19,14 @@ class _MapView extends State<MapView> {
   final mapController = MapController();
   bool init = false;
 
-  void _showPost(Post post) {
-    Navigator.pushNamed(context, "/postView", arguments: post);
+  final PostModel _postModel = PostModel();
+  final SavedModel _savedModel = SavedModel();
+
+  Future<void> _showPost(Post post) async {
+    await Navigator.pushNamed(context, "/postView", arguments: post);
+    setState(() {
+
+    });
   }
 
   void _centerOverUser() async {
@@ -48,13 +55,25 @@ class _MapView extends State<MapView> {
       init = true;
     }
 
+    Future<List<Post>> _getAllVisiblePosts() async {
+      List<Post> allPosts = await _postModel.getAllPostsList();
+
+      for (int i = 0; i < allPosts.length; ++i) {
+        if (await _savedModel.isPostHidden(null, allPosts[i].reference!.id)) {
+          //allPosts.removeAt(i);
+        }
+      }
+
+      return allPosts;
+    }
+
     return Scaffold(
         appBar:
             AppBar(), //Note: The back button is automatically added by Navigator.push()
         body: Stack(
           children: [
             FutureBuilder(
-                future: PostModel().getAllPostsList(),
+                future: _getAllVisiblePosts(),
                 builder: ((context, snapshot) {
                   if (!snapshot.hasData) {
                     //Loading screen
@@ -70,7 +89,7 @@ class _MapView extends State<MapView> {
                         ));
                   }
 
-                  //Main screeen
+                  //Main screen
                   return FlutterMap(
                     mapController: mapController,
                     options: MapOptions(

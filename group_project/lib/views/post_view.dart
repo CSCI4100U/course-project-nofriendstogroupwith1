@@ -8,6 +8,8 @@ import 'package:group_project/models/saved_model.dart';
 class PostView extends StatefulWidget {
   const PostView({Key? key}) : super(key: key);
 
+
+
   @override
   State<PostView> createState() => _PostViewState();
 }
@@ -15,7 +17,7 @@ class PostView extends StatefulWidget {
 class _PostViewState extends State<PostView> {
   final PostModel _postModel = PostModel();
   final SavedModel _savedModel = SavedModel();
-  bool isArgumentLoaded = false;
+  //bool isArgumentLoaded = false;
 
   Widget _buildCaptionBox(String? caption) {
     if (caption == null) {
@@ -74,11 +76,7 @@ class _PostViewState extends State<PostView> {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Post?;
-    Post? argumentPost;
-    if (args != null && !isArgumentLoaded) {
-      argumentPost = args;
-      isArgumentLoaded = true;
-    }
+    Post? argumentPost = args;
 
     return FutureBuilder(
       future: _getPostInfo(argumentPost),

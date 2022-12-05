@@ -43,8 +43,11 @@ dependencies:
 
   firebase_core:
   cloud_firestore:
+  firebase_storage:
   geopoint: ^1.0.0
   geolocator: ^9.0.2
+  camera: #^0.10.0+4
+  uuid:
 
 dev_dependencies:
   flutter_test:

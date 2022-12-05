@@ -93,6 +93,7 @@ class _AddPostState extends State<AddPost> {
           caption: _caption);
 
       await _model.insertPost(post_data);
+
       // snackbar to tell user the post is created
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -113,7 +114,7 @@ class _AddPostState extends State<AddPost> {
         builder: (context) {
           return SimpleDialog(
             title: Text(
-                "Is the following information correct?\n Title: $_title\n Caption: $_caption"),
+                "Is the following information correct?\n\n Title: $_title\n Caption: $_caption"),
             children: [
               SimpleDialogOption(
                 child: const Text("Yes"),

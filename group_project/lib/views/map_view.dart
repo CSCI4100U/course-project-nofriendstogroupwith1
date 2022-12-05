@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/plugin_api.dart';
 import 'package:group_project/models/post.dart';
 import 'package:group_project/models/post_model.dart';
 import 'package:group_project/constants.dart';
@@ -16,8 +17,7 @@ class MapView extends StatefulWidget {
 
 class _MapView extends State<MapView> {
   late List<Post> posts;
-  final mapController = MapController();
-  bool init = false;
+  final MapController mapController = MapController();
 
   final PostModel _postModel = PostModel();
   final SavedModel _savedModel = SavedModel();
@@ -31,9 +31,34 @@ class _MapView extends State<MapView> {
 
   void _centerOverUser() async {
     Position pos = await Geolocator.getCurrentPosition();
-    mapController.move(LatLng(pos.latitude, pos.longitude), mapController.zoom);
+
+    //Make sure it doesn't still try to center if you've already navigated away.
+    bool? done = await mapController.mapEventSink.done;
+    if (done!=null && done) {
+      mapController.move(
+          LatLng(pos.latitude, pos.longitude),
+          mapController.zoom
+      );
+    }
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _centerOverUser();
+  }
+
+  Future<List<Post>> _getAllVisiblePosts() async {
+    List<Post> allPosts = await _postModel.getAllPostsList();
+
+    for (int i = 0; i < allPosts.length; ++i) {
+      if (await _savedModel.isPostHidden(null, allPosts[i].reference!.id)) {
+        //allPosts.removeAt(i);
+      }
+    }
+
+    return allPosts;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,27 +67,6 @@ class _MapView extends State<MapView> {
     Geolocator.checkPermission().then((LocationPermission permission) {
       //print("Check Location Permission: $permission");
     });
-
-    //Get current gps position for map initialization
-    if (!init) {
-      Geolocator.getCurrentPosition().then((value) {
-        mapController.move(
-            LatLng(value.latitude, value.longitude), mapController.zoom);
-      });
-      init = true;
-    }
-
-    Future<List<Post>> _getAllVisiblePosts() async {
-      List<Post> allPosts = await _postModel.getAllPostsList();
-
-      for (int i = 0; i < allPosts.length; ++i) {
-        if (await _savedModel.isPostHidden(null, allPosts[i].reference!.id)) {
-          //allPosts.removeAt(i);
-        }
-      }
-
-      return allPosts;
-    }
 
     return Stack(
           children: [
@@ -81,6 +85,7 @@ class _MapView extends State<MapView> {
                             Text("Loading Posts")
                           ],
                         ));
+
                   }
 
                   //Main screen

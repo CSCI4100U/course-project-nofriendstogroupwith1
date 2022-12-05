@@ -48,6 +48,7 @@ dependencies:
   geolocator: ^9.0.2
   camera: #^0.10.0+4
   uuid:
+  shared_preferences:
 
 dev_dependencies:
   flutter_test:

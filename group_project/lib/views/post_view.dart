@@ -39,7 +39,7 @@ class _PostViewState extends State<PostView> {
 
     image = Image.network(post.imageURL!,
         errorBuilder: ((context, error, stackTrace) {
-      return Text("404, image url not found.");
+      return Text("Network Error: Image not found.");
     }));
 
     return ListView(

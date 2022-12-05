@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: PageView(
-        physics: const ScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         scrollDirection: Axis.horizontal,
         controller: _controller,
         children: [
@@ -98,7 +98,7 @@ class _HomePageState extends State<HomePage> {
               _controller.animateToPage(
                 _page,
                 curve: Curves.decelerate,
-                duration: const Duration(milliseconds: 250),
+                duration: const Duration(milliseconds: 500),
               );
             }
         },

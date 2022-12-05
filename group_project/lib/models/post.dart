@@ -9,8 +9,9 @@ class Post {
   String? caption;
 
   DocumentReference? reference;
+  String? documentID;
 
-  Post({this.title, this.imageURL, this.location, this.caption});
+  Post({this.title, this.imageURL, this.location, this.caption, this.documentID});
 
   Post.fromMap(var map, {this.reference}) {
     title = map['title'];

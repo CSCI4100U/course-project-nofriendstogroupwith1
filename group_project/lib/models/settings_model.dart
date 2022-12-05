@@ -2,6 +2,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsModel {
 
+  static const String settingAutoSave = "autoSave";
+  static const String settingLanguage = "language";
+
   Future<void> setStringSetting({required String name, required String value}) async {
     final prefs = await SharedPreferences.getInstance();
 

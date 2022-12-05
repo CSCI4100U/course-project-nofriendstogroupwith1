@@ -159,8 +159,13 @@ class SavedModel {
   //
   Future<void> unsavePost(Database? db, Post post) async {
     db ??= await DBUtils.init(); //Init database if null.
-
-    db!.delete(DBUtils.savedPostTable, where: 'documentID = ?', whereArgs: [post.reference!.id]);
+    if (post.reference==null) {
+      db!.delete(DBUtils.savedPostTable, where: 'documentID = ?',
+          whereArgs: [post.documentID!]);
+    } else {
+      db!.delete(DBUtils.savedPostTable, where: 'documentID = ?',
+          whereArgs: [post.reference!.id]);
+    }
   }
 
   //

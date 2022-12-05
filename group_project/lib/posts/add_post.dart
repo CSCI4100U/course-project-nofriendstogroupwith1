@@ -10,6 +10,8 @@ import 'package:group_project/constants.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:group_project/models/post.dart';
 import 'package:group_project/models/post_model.dart';
+import 'package:group_project/models/saved_model.dart';
+import 'package:group_project/models/settings_model.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'dart:io';
@@ -31,7 +33,11 @@ class _AddPostState extends State<AddPost> {
 
   String? _imagePath;
 
-  PostModel _model = PostModel();
+  final PostModel _model = PostModel();
+  final SavedModel _savedMode = SavedModel();
+  final SettingsModel _settingsModel = SettingsModel();
+
+  bool isBusy = false;
 
   @override
   Widget build(BuildContext context) {
@@ -41,14 +47,31 @@ class _AddPostState extends State<AddPost> {
       //print("Check Location Permission: $permission");
     });
 
+    if (isBusy) {
+      return Scaffold(
+        appBar: AppBar(),
+        body: Center(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 10,),
+                  Text("Uploading Post...")
+                ],
+            )
+        ),
+      );
+
+    }
+
     return Scaffold(
       appBar: AppBar(),
       body: Center(
         child: Column(
           children: [
             TextField(
-              decoration: InputDecoration(labelText: "Title:"),
-              style: TextStyle(fontSize: 30),
+              decoration: const InputDecoration(labelText: "Title:"),
+              style: const TextStyle(fontSize: 30),
               onChanged: (post_title) {
                 _title = post_title;
               },
@@ -75,7 +98,12 @@ class _AddPostState extends State<AddPost> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addToDb,
+        onPressed: () {
+          setState(() {
+            isBusy = true;
+          });
+          _addToDb().then((value) => Navigator.of(context).pop());
+        },
         tooltip: "Add",
         child: const Icon(Icons.add),
       ),
@@ -96,7 +124,16 @@ class _AddPostState extends State<AddPost> {
           location: LatLng(pos.latitude, pos.longitude),
           caption: _caption
       );
-      await _model.insertPost(post_data);
+      var ref = await _model.insertPost(post_data);
+
+      bool saveOnPost = await _settingsModel.getBoolSetting(SettingsModel.settingAutoSave)??true;
+      if (saveOnPost) {
+        post_data.reference = ref;
+        await _savedMode.savePost(null, post_data);
+      }
+      setState(() {
+        Navigator.of(context).pop();
+      });
     } else {
       print("Failed to upload image!");
     }

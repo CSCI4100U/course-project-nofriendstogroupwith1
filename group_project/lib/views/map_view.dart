@@ -56,6 +56,7 @@ class _MapView extends State<MapView> {
     for (int i = 0; i < allPosts.length; ++i) {
       if (await _savedModel.isPostHidden(null, allPosts[i].reference!.id)) {
         allPosts.removeAt(i);
+        --i;
       }
     }
 

@@ -54,28 +54,24 @@ class _AddPostState extends State<AddPost> {
               },
             ),
             TextField(
-              decoration: InputDecoration(
-                  labelText: "Caption"
-              ),
+              decoration: InputDecoration(labelText: "Caption"),
               style: TextStyle(fontSize: 30),
               onChanged: (cap) {
                 _caption = cap;
               },
             ),
-            Container( 
-                child: _imagePath != null?
-                Image.file(File(_imagePath!))://Text("Yes pic"):
-                Text("no pic") //Image.file(File(widget.imagePath!)),
-            ),
-            ElevatedButton(
-                onPressed: takepic,
-                child: const Text("Take a pic")
-            ),
+            Container(
+                child: _imagePath != null
+                    ? Image.file(File(_imagePath!))
+                    : //Text("Yes pic"):
+                    Text("no pic") //Image.file(File(widget.imagePath!)),
+                ),
+            ElevatedButton(onPressed: takepic, child: const Text("Take a pic")),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addToDb,
+        onPressed: userConfirmation,
         tooltip: "Add",
         child: const Icon(Icons.add),
       ),
@@ -88,18 +84,62 @@ class _AddPostState extends State<AddPost> {
     Position pos = await Geolocator.getCurrentPosition();
     final uuid = Uuid();
     _imageURL = await uploadPhoto(uuid.v1(), File(_imagePath!));
-    if (_imageURL!=null) {
+    if (_imageURL != null) {
       print("Image upload successful!");
       Post post_data = Post(
           title: _title,
           imageURL: _imageURL,
           location: LatLng(pos.latitude, pos.longitude),
-          caption: _caption
-      );
+          caption: _caption);
+
       await _model.insertPost(post_data);
+      // snackbar to tell user the post is created
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text(
+          "Post Created",
+          style: TextStyle(fontSize: 14),
+        )),
+      );
+      Navigator.pop(context);
     } else {
       print("Failed to upload image!");
     }
+  }
+
+  Future userConfirmation() async {
+    var confirmation = await showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text(
+                "Is the following information correct?\n\n Title: $_title\n Caption: $_caption"),
+            children: [
+              SimpleDialogOption(
+                child: const Text("Yes"),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+              SimpleDialogOption(
+                child: const Text("No"),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+            ],
+          );
+        });
+
+    print("User confirmation of post: $confirmation");
+
+    if (confirmation == true) {
+      _addToDb();
+    } else {
+      confirmation == false;
+    }
+
+    return confirmation;
   }
 
   Future<String?> uploadPhoto(String name, File file) async {
@@ -120,18 +160,15 @@ class _AddPostState extends State<AddPost> {
     //get a list of all cameras on the device
     final cameras = await availableCameras();
 
-
-    var result = await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+    var result =
+        await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return Camera(cameras: cameras);
     }));
 
-    if (result!=null && result is String) {
+    if (result != null && result is String) {
       _imagePath = result;
     }
 
-    setState(() {
-    });
+    setState(() {});
   }
-
 }
-

@@ -134,7 +134,7 @@ class _MapView extends State<MapView> {
 
         // this button is placed on the map and allows user to zoom into the map
         Positioned(
-          top: 20,
+          top: 10,
           right: 0,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(shape: const CircleBorder()),
@@ -148,7 +148,7 @@ class _MapView extends State<MapView> {
 
         // this button is placed on the map and allows user to zoom out of the map
         Positioned(
-          top: 20,
+          top: 10,
           right: 50,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(shape: const CircleBorder()),

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:group_project/views/map_view.dart';
+import 'package:group_project/views/post_data_view.dart';
+import 'package:group_project/views/saved_post_view.dart';
+import 'package:group_project/views/settings_view.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -47,10 +50,10 @@ class _HomePageState extends State<HomePage> {
         controller: _controller,
         children: [
           const MapView(),
-          Center(child: Text("Post Data Here")),
+          const PostDataView(),
           Container(),
-          Center(child: Text("Settings Here")),
-          Center(child: Text("Saved Posts Here")),
+          const SettingsView(),
+          const SavedPostView(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

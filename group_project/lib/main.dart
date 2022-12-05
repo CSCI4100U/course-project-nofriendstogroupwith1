@@ -6,6 +6,7 @@ import 'package:group_project/constants.dart';
 import 'package:group_project/dev_tools/post_test_list.dart';
 import 'package:group_project/models/db_utils.dart';
 import 'package:group_project/posts/add_post.dart';
+import 'package:group_project/views/home_page.dart';
 import 'package:group_project/views/map_view.dart';
 import 'package:group_project/views/post_view.dart';
 
@@ -32,10 +33,11 @@ class MyApp extends StatelessWidget {
               theme: ThemeData(
                 primarySwatch: Colors.blue,
               ),
-              home: const DevPage(
-                  title: 'DEVPAGE'
-              ), //TODO change to map in final release
+              home: const HomePage(), //TODO change to map in final release
               routes: {
+                '/dev' : (context) {
+                  return const DevPage();
+                },
                 '/mapView': (context) {
                   return const MapView();
                 },
@@ -65,9 +67,7 @@ class MyApp extends StatelessWidget {
 }
 
 class DevPage extends StatefulWidget {
-  const DevPage({super.key, required this.title});
-
-  final String title;
+  const DevPage({super.key});
 
   @override
   State<DevPage> createState() => _DevPageState();
@@ -78,7 +78,7 @@ class _DevPageState extends State<DevPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text('DEVPAGE'),
       ),
       body: Center(
         child: Column(
@@ -88,8 +88,8 @@ class _DevPageState extends State<DevPage> {
               'DEVPAGE',
             ),
             ElevatedButton(
-                onPressed: () => Navigator.pushNamed(context, "/mapView"),
-                child: const Text("Go to map view")
+                onPressed: () => Navigator.pushNamed(context, "/home"),
+                child: const Text("Go to home Page")
             ),
             ElevatedButton(
                 onPressed: () => Navigator.pushNamed(context, "/postView"),

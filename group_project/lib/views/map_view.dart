@@ -34,9 +34,6 @@ class _MapView extends State<MapView> {
     mapController.move(LatLng(pos.latitude, pos.longitude), mapController.zoom);
   }
 
-  void _createPost() {
-    Navigator.pushNamed(context, "/addPost");
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,10 +64,7 @@ class _MapView extends State<MapView> {
       return allPosts;
     }
 
-    return Scaffold(
-        appBar:
-            AppBar(), //Note: The back button is automatically added by Navigator.push()
-        body: Stack(
+    return Stack(
           children: [
             FutureBuilder(
                 future: _getAllVisiblePosts(),
@@ -124,17 +118,28 @@ class _MapView extends State<MapView> {
                       ])
                     ],
                   );
-                }))
+                })),
+            Positioned(
+                bottom: 20,
+                right: 20,
+                height: 60,
+                width: 60,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(shape: CircleBorder()),
+                  onPressed: _centerOverUser,
+                  child: const Icon(Icons.gps_fixed_rounded),
+                )
+            ),
           ],
-        ),
-        floatingActionButton: Wrap(children: [
-          FloatingActionButton(
-            heroTag: "center",
-            onPressed: _centerOverUser,
-            child: Icon(Icons.gps_fixed_rounded),
-          ),
-          FloatingActionButton(
-              heroTag: "add", onPressed: _createPost, child: Icon(Icons.add))
-        ]));
+        );
+        //floatingActionButton: Wrap(children: [
+        //  FloatingActionButton(
+        //    heroTag: "center",
+        //    onPressed: _centerOverUser,
+        //    child: const Icon(Icons.gps_fixed_rounded),
+        //  ),
+        //  FloatingActionButton(
+        //      heroTag: "add", onPressed: _createPost, child: Icon(Icons.add))
+        //])
   }
 }

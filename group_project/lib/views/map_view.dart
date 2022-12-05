@@ -18,15 +18,14 @@ class MapView extends StatefulWidget {
 class _MapView extends State<MapView> {
   late List<Post> posts;
   final MapController mapController = MapController();
+  var zoomValue = 14.0;
 
   final PostModel _postModel = PostModel();
   final SavedModel _savedModel = SavedModel();
 
   Future<void> _showPost(Post post) async {
     await Navigator.pushNamed(context, "/postView", arguments: post);
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   void _centerOverUser() async {
@@ -34,11 +33,9 @@ class _MapView extends State<MapView> {
 
     //Make sure it doesn't still try to center if you've already navigated away.
     bool? done = await mapController.mapEventSink.done;
-    if (done!=null && done) {
+    if (done != null && done) {
       mapController.move(
-          LatLng(pos.latitude, pos.longitude),
-          mapController.zoom
-      );
+          LatLng(pos.latitude, pos.longitude), mapController.zoom);
     }
   }
 
@@ -69,73 +66,100 @@ class _MapView extends State<MapView> {
     });
 
     return Stack(
-          children: [
-            FutureBuilder(
-                future: _getAllVisiblePosts(),
-                builder: ((context, snapshot) {
-                  if (!snapshot.hasData) {
-                    //Loading screen
-                    return Container(
-                        alignment: Alignment.center,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const [
-                            CircularProgressIndicator(),
-                            Text("Loading Posts")
-                          ],
-                        ));
+      children: [
+        FutureBuilder(
+            future: _getAllVisiblePosts(),
+            builder: ((context, snapshot) {
+              if (!snapshot.hasData) {
+                //Loading screen
+                return Container(
+                    alignment: Alignment.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        CircularProgressIndicator(),
+                        Text("Loading Posts")
+                      ],
+                    ));
+              }
 
-                  }
+              //Main screen
+              return FlutterMap(
+                mapController: mapController,
+                options: MapOptions(
+                  minZoom: 5,
+                  maxZoom: 18,
+                  zoom: zoomValue,
+                  center: AppConstants.defaultLocation,
+                ),
+                layers: [
+                  TileLayerOptions(
+                    urlTemplate:
+                        "https://api.mapbox.com/styles/v1/alexnayl/{mapStyleId}/tiles/256/{z}/{x}/{y}@2x?access_token={accessToken}",
+                    additionalOptions: {
+                      'mapStyleId': AppConstants.mapBoxStyleId,
+                      'accessToken': AppConstants.mapBoxAccessToken,
+                    },
+                  ),
+                  MarkerLayerOptions(rotate: true, markers: [
+                    //post icons
+                    for (int i = 0; i < snapshot.data!.length; i++)
+                      Marker(
+                        point: snapshot.data![i].location ??
+                            AppConstants.defaultLocation,
+                        builder: (context) => IconButton(
+                            onPressed: (() => _showPost(snapshot.data![i])),
+                            iconSize: 45,
+                            icon: const Icon(
+                              Icons.location_pin,
+                              color: Colors.blue,
+                            )),
+                      )
+                  ])
+                ],
+              );
+            })),
+        Positioned(
+          bottom: 20,
+          right: 20,
+          height: 60,
+          width: 60,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(shape: const CircleBorder()),
+            onPressed: _centerOverUser,
+            child: const Icon(Icons.gps_fixed_rounded),
+          ),
+        ),
 
-                  //Main screen
-                  return FlutterMap(
-                    mapController: mapController,
-                    options: MapOptions(
-                      minZoom: 5,
-                      maxZoom: 18,
-                      zoom: 13,
-                      center: AppConstants.defaultLocation,
-                    ),
-                    layers: [
-                      TileLayerOptions(
-                        urlTemplate:
-                            "https://api.mapbox.com/styles/v1/alexnayl/{mapStyleId}/tiles/256/{z}/{x}/{y}@2x?access_token={accessToken}",
-                        additionalOptions: {
-                          'mapStyleId': AppConstants.mapBoxStyleId,
-                          'accessToken': AppConstants.mapBoxAccessToken,
-                        },
-                      ),
-                      MarkerLayerOptions(rotate: true, markers: [
-                        //post icons
-                        for (int i = 0; i < snapshot.data!.length; i++)
-                          Marker(
-                            point: snapshot.data![i].location ??
-                                AppConstants.defaultLocation,
-                            builder: (context) => IconButton(
-                                onPressed: (() => _showPost(snapshot.data![i])),
-                                iconSize: 45,
-                                icon: const Icon(
-                                  Icons.location_pin,
-                                  color: Colors.blue,
-                                )),
-                          )
-                      ])
-                    ],
-                  );
-                })),
-            Positioned(
-                bottom: 20,
-                right: 20,
-                height: 60,
-                width: 60,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(shape: const CircleBorder()),
-                  onPressed: _centerOverUser,
-                  child: const Icon(Icons.gps_fixed_rounded),
-                )
-            ),
-          ],
-        );
+        // this button is placed on the map and allows user to zoom into the map
+        Positioned(
+          top: 20,
+          right: 0,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(shape: const CircleBorder()),
+            onPressed: () {
+              zoomValue += 0.2;
+              mapController.move(AppConstants.defaultLocation, zoomValue);
+            },
+            child: const Icon(Icons.zoom_in),
+          ),
+        ),
+
+        // this button is placed on the map and allows user to zoom out of the map
+        Positioned(
+          top: 20,
+          right: 50,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(shape: const CircleBorder()),
+            onPressed: () {
+              zoomValue -= 0.2;
+              mapController.move(AppConstants.defaultLocation, zoomValue);
+            },
+            child: const Icon(Icons.zoom_out),
+          ),
+        ),
+      ],
+    );
   }
 }

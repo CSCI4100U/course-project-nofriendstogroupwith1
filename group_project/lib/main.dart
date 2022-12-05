@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:group_project/camera/camera.dart';
 import 'package:group_project/constants.dart';
 import 'package:group_project/dev_tools/post_test_list.dart';
 import 'package:group_project/models/db_utils.dart';
@@ -9,15 +10,21 @@ import 'package:group_project/views/map_view.dart';
 import 'package:group_project/views/post_view.dart';
 
 Future<void> main() async {
+  /*
   WidgetsFlutterBinding.ensureInitialized();
-
   //get a list of all cameras on the device
   final cameras = await availableCameras();
+  // Get a specific camera from the list of available cameras.
+  final firstCamera = cameras.first;
+  */
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key,});// required this.camera});
+
+  //final CameraDescription camera;
+  
 
   // This widget is the root of your application.
   @override
@@ -48,6 +55,10 @@ class MyApp extends StatelessWidget {
                 '/addPost': (context) {
                   return const AddPost();
                 },
+                /*
+                '/camera': (context) {
+                  return const Camera(cameras: camera,);
+                },*/
                 //TODO: remove this page and associated files for later
                 '/devTestPostList': (context) {
                   return const PostTestList();
@@ -100,6 +111,10 @@ class _DevPageState extends State<DevPage> {
             ),
             ElevatedButton(
                 onPressed: () => Navigator.pushNamed(context, "/devTestPostList"),
+                child: const Text("Go to post test list")
+            ),
+            ElevatedButton(
+                onPressed: () => Navigator.pushNamed(context, "/camera"),
                 child: const Text("Go to post test list")
             ),
           ],

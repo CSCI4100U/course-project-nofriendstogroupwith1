@@ -1,12 +1,17 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:group_project/camera/camera.dart';
 import 'package:group_project/constants.dart';
 
 import 'package:group_project/models/post.dart';
 import 'package:group_project/models/post_model.dart';
 import 'package:latlong2/latlong.dart';
+
+import 'dart:io';
+import 'dart:async';
 
 class AddPost extends StatefulWidget {
   const AddPost({Key? key, this.imagePath}) : super(key: key);
@@ -26,6 +31,7 @@ class _AddPostState extends State<AddPost> {
 
   @override
   Widget build(BuildContext context) {
+    var y;
     return Scaffold(
       appBar: AppBar(),
       body: Center(
@@ -57,7 +63,16 @@ class _AddPostState extends State<AddPost> {
               onChanged: (cap){
                 _caption = cap;
               },
-            ),            
+            ),
+            Container( 
+                child: widget.imagePath != null?
+                Image.file(File(widget.imagePath!))://Text("No pic"):
+                Text("yes pic") //Image.file(File(widget.imagePath!)),
+            ),
+            ElevatedButton(
+                onPressed: takepic,
+                child: const Text("Take a pic")
+            ),
           ],
       ),
       ),
@@ -80,4 +95,22 @@ class _AddPostState extends State<AddPost> {
     );
     await _model.insertPost(post_data);
   }
+}
+
+Future<void> takepic() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  //get a list of all cameras on the device
+  final cameras = await availableCameras();
+  // Get a specific camera from the list of available cameras.
+  //final firstCamera = cameras.first;
+
+  //runApp(Camera(cameras: cameras,));
+  runApp(MaterialApp(
+      theme: ThemeData.dark(),
+      home: Camera(
+      //pass the cameras list to the next widget
+        cameras: cameras,
+      ),
+    )
+  );
 }

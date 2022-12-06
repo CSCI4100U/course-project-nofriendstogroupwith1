@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -38,25 +39,41 @@ class _MapView extends State<MapView> {
     setState(() {});
   }
 
-  void _centerOverUser() {
-    //Position pos = await
-    Geolocator.getCurrentPosition().then((pos) {
-      try {
-        mapController.move(
-            LatLng(pos.latitude, pos.longitude), mapController.zoom);
+  Position? streamedPosition;
+  void updatePosition(Position? position) {
+    streamedPosition = position;
+  }
 
-        // snackbar to tell user the map is centered
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text(
-            "Map Centered",
-            style: TextStyle(fontSize: 14),
-          )),
-        );
-      } on StateError catch (e) {
-        print("Navigated away before recenter!");
-      }
-    });
+  StreamSubscription? subscription;
+
+  @override
+  void initState() {
+    super.initState();
+    subscription = Geolocator.getPositionStream().listen(updatePosition);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if (subscription!=null) {
+      subscription!.cancel();
+    }
+  }
+
+  void _centerOverUser() {
+    //Try using streamedPosition
+    if (streamedPosition!=null) {
+      mapController.move(
+          LatLng(streamedPosition!.latitude, streamedPosition!.longitude), mapController.zoom);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text(
+              "Map Centered",
+              style: TextStyle(fontSize: 14),
+            )),
+      );
+      //Otherwise fall back to asking for a current location.
+    }
   }
 
   late Position currentPosition;
@@ -99,8 +116,6 @@ class _MapView extends State<MapView> {
 
   @override
   Widget build(BuildContext context) {
-
-
     return Stack(
       children: [
         FutureBuilder(
@@ -176,11 +191,12 @@ class _MapView extends State<MapView> {
 
         // this button is placed on the map and allows user to zoom into the map
         Positioned(
-          top: 20,
+          bottom: 150,
           right: 0,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(shape: const CircleBorder()),
             onPressed: () {
+              zoomValue = mapController.zoom;
               zoomValue = min(zoomValue += 0.2, maxZoom);
               mapController.move(mapController.center, zoomValue);
             },
@@ -190,11 +206,12 @@ class _MapView extends State<MapView> {
 
         // this button is placed on the map and allows user to zoom out of the map
         Positioned(
-          top: 70,
+          bottom: 100,
           right: 0,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(shape: const CircleBorder()),
             onPressed: () {
+              zoomValue = mapController.zoom;
               zoomValue = max(zoomValue -= 0.2, minZoom);
               mapController.move(mapController.center, zoomValue);
             },

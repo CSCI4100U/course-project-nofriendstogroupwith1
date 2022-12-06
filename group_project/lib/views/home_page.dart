@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:group_project/models/settings_model.dart';
 import 'package:group_project/views/map_view.dart';
 import 'package:group_project/views/post_data_view.dart';
 import 'package:group_project/views/saved_post_view.dart';
@@ -7,6 +10,12 @@ import 'package:group_project/views/settings_view.dart';
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
+  static void setLanguage(BuildContext context, Locale newLocale) async {
+    _HomePageState state =
+    context.findAncestorStateOfType<_HomePageState>()!;
+    state.setLanguage(newLocale);
+  }
+
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -14,15 +23,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final PageController _controller = PageController();
 
+  final SettingsModel _settingsModel = SettingsModel();
+
   int _page = 0;
 
-  final List<String> pageNames = [
-    "Map",
-    "Post Stats",
-    "", //Page 3 is empty (Just using button for add post)
-    "Settings",
-    "Saved Posts",
-  ];
+  void setLanguage(Locale newLocale) {
+    FlutterI18n.refresh(context, newLocale).then((value) => setState((){}));
+  }
 
   Future<void> _createPost() async {
     await Navigator.pushNamed(context, "/addPost");
@@ -41,7 +48,27 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    _settingsModel.getStringSetting(SettingsModel.settingLanguage)
+        .then((value) {
+          value??="en-US";
+          List<String> lang = value!.split("-");
+          setLanguage(Locale(lang[0],lang[1]));
+        });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final List<String> pageNames = [
+      "Map",
+      "Post Stats",
+      "", //Page 3 is empty (Just using button for add post)
+      FlutterI18n.translate(context, "settings.page"),
+      "Saved Posts",
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Text(pageNames[_page]),
@@ -69,7 +96,7 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _page,
         type: BottomNavigationBarType.fixed,
-        items: const [
+        items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.map_outlined),
             activeIcon: Icon(Icons.map),
@@ -87,7 +114,7 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.settings_outlined),
             activeIcon: Icon(Icons.settings),
-            label: "Settings",
+            label: FlutterI18n.translate(context, "settings.page"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bookmarks_outlined),

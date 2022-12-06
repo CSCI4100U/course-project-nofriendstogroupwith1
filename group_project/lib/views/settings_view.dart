@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:group_project/models/settings_model.dart';
+import 'package:group_project/views/home_page.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
@@ -45,10 +47,8 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
 
-  Widget _buildToggleSetting(
-      {String label = "",
-      bool value = false,
-      required void Function(bool)? onChanged}) {
+  Widget _buildToggleSetting({String label = "",bool value = false,
+                            required void Function(bool)? onChanged}) {
     return _buildSetting(
       label: label,
       child: Switch(value: value, onChanged: onChanged),
@@ -72,9 +72,9 @@ class _SettingsViewState extends State<SettingsView> {
         builder: (context, snapshot) {
           return ListView(
             children: [
-              _buildSettingHeader("General"),
+              _buildSettingHeader(FlutterI18n.translate(context, "settings.general.heading")),
               _buildToggleSetting(
-                  label: "Auto-save added posts",
+                  label: FlutterI18n.translate(context, "settings.general.autoSave"),
                   value: _autoSave,
                   onChanged: (value) {
                     setState(() {
@@ -84,7 +84,7 @@ class _SettingsViewState extends State<SettingsView> {
                     });
                   }),
               _buildToggleSetting(
-                  label: "Use 12-Hour Time",
+                  label: FlutterI18n.translate(context, "settings.general.12hour"),
                   value: _12Hour,
                   onChanged: (value) {
                     setState(() {
@@ -94,7 +94,7 @@ class _SettingsViewState extends State<SettingsView> {
                     });
                   }),
               _buildToggleSetting(
-                  label: "Push Notifications",
+                  label: FlutterI18n.translate(context, "settings.general.notify"),
                   value: _pushNotifications,
                   onChanged: (value) {
                     setState(() {
@@ -104,9 +104,9 @@ class _SettingsViewState extends State<SettingsView> {
                           value: value);
                     });
                   }),
-              _buildSettingHeader("Localization"),
+              _buildSettingHeader(FlutterI18n.translate(context, "settings.localization.heading")),
               _buildSetting(
-                label: SettingsModel.settingLanguage,
+                label: FlutterI18n.translate(context, "settings.localization.language"),
                 child: DropdownButton(
                     value: _language,
                     items: const [
@@ -127,7 +127,7 @@ class _SettingsViewState extends State<SettingsView> {
                       DropdownMenuItem(
                         value: "fr-FR",
                         child: Text(
-                          "🇫🇷 French (FR)",
+                          "🇫🇷 Français (FR)",
                           textAlign: TextAlign.end,
                         ),
                       ),
@@ -139,32 +139,41 @@ class _SettingsViewState extends State<SettingsView> {
                           _settingsModel.setStringSetting(
                               name: SettingsModel.settingLanguage,
                               value: value);
+                          List<String> lang = _language.split('-');
+                          HomePage.setLanguage(context, Locale(lang[0], lang[1]));
                         }
                       });
                     }),
               ),
-              _buildSettingHeader("Legal"),
-              _buildSetting(
-                  label: "Details",
-                  child: ElevatedButton(
-                      onPressed: () {
-                        showAboutDialog(
-                          context: context,
-                          applicationIcon: const FlutterLogo(),
-                          applicationName: "Post It, Pin It",
-                          applicationVersion: "1.0.0",
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.only(top: 30),
-                              child: Text(
-                                  "This app was created by Alexander Naylor, Dylan Moore, Sukhpreet Bansal and Hamza Khan."),
-                            ),
-                          ],
-                          applicationLegalese:
-                              "Copyright 2022 © Alexander Naylor, Dylan Moore, Sukhpreet Bansal and Hamza Khan.",
-                        );
-                      },
-                      child: const Text("About")))
+              _buildSettingHeader(FlutterI18n.translate(context, "settings.legal.heading")),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 200,
+                    child: ElevatedButton(
+                          onPressed: () {
+                            showAboutDialog(
+                              context: context,
+                              applicationIcon: const FlutterLogo(),
+                              applicationName: "Post It, Pin It",
+                              applicationVersion: "1.0.0",
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.only(top: 30),
+                                  child: Text(
+                                      "This app was created by Alexander Naylor, Dylan Moore, Sukhpreet Bansal and Hamza Khan."),
+                                ),
+                              ],
+                              applicationLegalese:
+                                  "Copyright 2022 © Alexander Naylor, Dylan Moore, Sukhpreet Bansal and Hamza Khan.",
+                            );
+                          },
+                          child: Text(FlutterI18n.translate(context, "settings.legal.about"))
+                        ),
+                  )
+                ],
+              ),
             ],
           );
         });

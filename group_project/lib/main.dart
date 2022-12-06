@@ -10,6 +10,10 @@ import 'package:group_project/views/home_page.dart';
 import 'package:group_project/views/map_view.dart';
 import 'package:group_project/views/post_view.dart';
 
+import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:flutter_i18n/flutter_i18n_delegate.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -47,6 +51,7 @@ class MyApp extends StatelessWidget {
                 '/addPost': (context) {
                   return const AddPost();
                 },
+
                 /*
                 '/camera': (context) {
                   return const Camera(cameras: camera,);
@@ -56,6 +61,25 @@ class MyApp extends StatelessWidget {
                   return const PostTestList();
                 },
               },
+              localizationsDelegates: [
+                FlutterI18nDelegate(
+                  missingTranslationHandler: (key,locale){
+                    print("MISSING KEY: $key, Language Code: ${locale!.languageCode}");
+                  },
+                  translationLoader: FileTranslationLoader(
+                      useCountryCode: true,
+                      fallbackFile: 'en_US',
+                      basePath: 'assets/i18n'
+                  ),
+                ),
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              supportedLocales: const [
+                Locale('en', 'US'),
+                Locale('en', 'UK'),
+                Locale('fr', 'FR'),
+              ],
           );
         } else {
           return const Center(child: CircularProgressIndicator());

@@ -1,0 +1,23 @@
+{
+  "map" : {
+    "page" : "Map",
+    "loading" : "Loading Posts..."
+  },
+  "settings" : {
+    "page" : "Settings",
+    "general" : {
+      "heading" : "General",
+      "autoSave" : "Auto-save added posts",
+      "12hour" : "Use 12-Hour time",
+      "notify" : "Enable push notifications"
+    },
+    "localization" : {
+      "heading" : "Localisation",
+      "language" : "Language"
+    },
+    "legal" : {
+      "heading" : "Legal",
+      "about" : "About"
+    }
+  }
+}

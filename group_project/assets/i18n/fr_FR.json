@@ -1,0 +1,23 @@
+{
+  "map" : {
+    "page" : "Carte",
+    "loading" : "Chargement des messages..."
+  },
+  "settings" : {
+    "page" : "Paramètres",
+    "general" : {
+      "heading" : "Général",
+      "autoSave" : "Messages de sauvegarde automatique ajoutés",
+      "12hour" : "Utiliser l'horloge de 12 heures",
+      "notify" : "Activer les notifications push"
+    },
+    "localization" : {
+      "heading" : "Localisation",
+      "language" : "Langue"
+    },
+    "legal" : {
+      "heading" : "Légal",
+      "about" : "À propos"
+    }
+  }
+}

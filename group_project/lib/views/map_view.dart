@@ -30,7 +30,11 @@ class _MapView extends State<MapView> {
   final SavedModel _savedModel = SavedModel();
 
   Future<void> _showPost(Post post) async {
-    await Navigator.pushNamed(context, "/postView", arguments: post);
+    bool? hideFromMap = await Navigator.pushNamed(context, "/postView", arguments: post) as bool;
+    if (hideFromMap!=null && hideFromMap) {
+      //Instantly remove a hidden post from the map while waiting for the updated list.
+      posts.remove(post);
+    }
     setState(() {});
   }
 
@@ -70,6 +74,7 @@ class _MapView extends State<MapView> {
       }
     }
 
+    posts=allPosts;
     return allPosts;
   }
 

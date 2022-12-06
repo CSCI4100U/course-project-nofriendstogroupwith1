@@ -18,6 +18,8 @@ class _PostViewState extends State<PostView> {
   final SavedModel _savedModel = SavedModel();
   //bool isArgumentLoaded = false;
 
+  bool hideFromMap = false;
+
   Widget _buildCaptionBox(String? caption) {
     if (caption == null) {
       return Container();
@@ -32,6 +34,7 @@ class _PostViewState extends State<PostView> {
       ),
     );
   }
+
 
 
 
@@ -120,102 +123,112 @@ class _PostViewState extends State<PostView> {
     };
   }
 
+  Future<bool> _onWillPop() async {
+    Navigator.of(context).pop(hideFromMap);
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Post?;
     Post? argumentPost = args;
 
-    return FutureBuilder(
-      future: _getPostInfo(argumentPost),
-      builder: (context, snapshot) {
-        //If the post hasn't loaded yet...
-        if (!snapshot.hasData) {
-          return Scaffold(
-            appBar: AppBar(),
-            body: const Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: FutureBuilder(
+        future: _getPostInfo(argumentPost),
+        builder: (context, snapshot) {
+          //If the post hasn't loaded yet...
+          if (!snapshot.hasData) {
+            return Scaffold(
+              appBar: AppBar(),
+              body: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
 
-        if (snapshot.data!.isEmpty) {
+          if (snapshot.data!.isEmpty) {
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text("No posts found"),
+              ),
+            );
+          }
+
+          //Otherwise, if the post has loaded:
+
+          //Grab the post data
+          Post post = snapshot.data!['post'];
+          bool deleted = snapshot.data!['deleted'];
+          bool hidden = snapshot.data!['hidden'];
+          bool saved = snapshot.data!['saved'];
+
+          IconData hideIcon = Icons.visibility_off_outlined;
+          if (hidden) {
+            hideIcon = Icons.visibility_off;
+          }
+
+          IconData saveIcon = Icons.bookmark_border;
+          if (saved) {
+            saveIcon = Icons.bookmark;
+          }
+
+          List<Widget> postActions = [];
+          if (!hidden) {
+            postActions.add(
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      if (saved) {
+                        if (deleted) {
+                          _savedModel
+                              .unsavePost(null, post)
+                              .then((value) => Navigator.of(context).pop());
+                        } else {
+                          _savedModel.unsavePost(null, post);
+                        }
+                      } else {
+                        _savedModel.savePost(null, post);
+                      }
+                    });
+                  },
+                  tooltip: "Save Post",
+                  icon: Icon(saveIcon)),
+            );
+          }
+
+          postActions.add(IconButton(
+            onPressed: () {
+              setState(() {
+                if (hidden) {
+                  if (deleted) {
+                    _savedModel
+                        .unsavePost(null, post)
+                        .then((value) => Navigator.of(context).pop());
+                    hideFromMap=false;
+                  } else {
+                    _savedModel.unsavePost(null, post);
+                  }
+                } else {
+                  _savedModel.hidePost(null, post);
+                  hideFromMap=true;
+                }
+              });
+            },
+            tooltip: "Hide Post",
+            icon: Icon(hideIcon),
+          ));
+
           return Scaffold(
             appBar: AppBar(
-              title: const Text("No posts found"),
+              title: Text(post.title ?? "[Missing Title]"),
+              actions: postActions,
             ),
+            body: _buildPost(post),
           );
-        }
-
-        //Otherwise, if the post has loaded:
-
-        //Grab the post data
-        Post post = snapshot.data!['post'];
-        bool deleted = snapshot.data!['deleted'];
-        bool hidden = snapshot.data!['hidden'];
-        bool saved = snapshot.data!['saved'];
-
-        IconData hideIcon = Icons.visibility_off_outlined;
-        if (hidden) {
-          hideIcon = Icons.visibility_off;
-        }
-
-        IconData saveIcon = Icons.bookmark_border;
-        if (saved) {
-          saveIcon = Icons.bookmark;
-        }
-
-        List<Widget> postActions = [];
-        if (!hidden) {
-          postActions.add(
-            IconButton(
-                onPressed: () {
-                  setState(() {
-                    if (saved) {
-                      if (deleted) {
-                        _savedModel
-                            .unsavePost(null, post)
-                            .then((value) => Navigator.of(context).pop());
-                      } else {
-                        _savedModel.unsavePost(null, post);
-                      }
-                    } else {
-                      _savedModel.savePost(null, post);
-                    }
-                  });
-                },
-                tooltip: "Save Post",
-                icon: Icon(saveIcon)),
-          );
-        }
-
-        postActions.add(IconButton(
-          onPressed: () {
-            setState(() {
-              if (hidden) {
-                if (deleted) {
-                  _savedModel
-                      .unsavePost(null, post)
-                      .then((value) => Navigator.of(context).pop());
-                } else {
-                  _savedModel.unsavePost(null, post);
-                }
-              } else {
-                _savedModel.hidePost(null, post);
-              }
-            });
-          },
-          tooltip: "Hide Post",
-          icon: Icon(hideIcon),
-        ));
-
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(post.title ?? "[Missing Title]"),
-            actions: postActions,
-          ),
-          body: _buildPost(post),
-        );
-      },
+        },
+      ),
     );
   }
 }

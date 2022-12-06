@@ -47,7 +47,7 @@ class _SavedPostViewState extends State<SavedPostView> with SingleTickerProvider
           height: 60,
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(4.0)),
-            child: Image.network(post.imageURL??"", height: 60),
+            child: Image.network(post.imageURL??"", height: 60, fit: BoxFit.fill),
           )
       ),
       onTap: () {

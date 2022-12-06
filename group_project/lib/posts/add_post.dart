@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:camera/camera.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +38,8 @@ class _AddPostState extends State<AddPost> {
 
   int? _dateTime;
 
+  final _formKey = GlobalKey<FormState>();
+
   final PostModel _model = PostModel();
   final SavedModel _savedMode = SavedModel();
   final SettingsModel _settingsModel = SettingsModel();
@@ -43,12 +47,18 @@ class _AddPostState extends State<AddPost> {
   bool isBusy = false;
 
   @override
+  void initState() {
+    super.initState();
+
+    takepic();
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     Geolocator.isLocationServiceEnabled().then((value) => null);
     Geolocator.requestPermission().then((value) => null);
-    Geolocator.checkPermission().then((LocationPermission permission) {
-      //print("Check Location Permission: $permission");
-    });
+    Geolocator.checkPermission().then((value) => null);
 
     if (isBusy) {
       return Scaffold(
@@ -69,50 +79,80 @@ class _AddPostState extends State<AddPost> {
 
     }
 
+    final double sizeToFit = min(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add Post"),
       ),
       body: Center(
-        child: Column(
+        child: ListView(
+          padding: EdgeInsets.all(30),
           children: [
-            TextField(
-              decoration: const InputDecoration(
-                  labelText: "Title:"
-              ),
-              style: const TextStyle(fontSize: 30),
-              onChanged: (postTitle) {
-                _title = postTitle;
-              },
+            ElevatedButton(
+                onPressed: takepic,
+                child: const Text("Retake Photo")
             ),
-            TextField(
-              decoration: const InputDecoration(
-                  labelText: "Caption"
-              ),
-              style: const TextStyle(fontSize: 30),
-              onChanged: (cap) {
-                _caption = cap;
-              },
-            ),
-            Container(
+            SizedBox(
                 child: _imagePath != null
-                    ? Image.file(File(_imagePath!))
+                    ? Image.file(File(_imagePath!), fit: BoxFit.scaleDown, width: sizeToFit, height: sizeToFit,)
                     : //Text("Yes pic"):
-                    Text("no pic") //Image.file(File(widget.imagePath!)),
-                ),
-            ElevatedButton(onPressed: takepic, child: const Text("Retake Photo")),
+                Text("no pic") //Image.file(File(widget.imagePath!)),
+            ),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    decoration: const InputDecoration(
+                        labelText: "Title:"
+                    ),
+                    style: const TextStyle(fontSize: 24),
+                    maxLength: 20,
+                    validator: (value) {
+                      if (value!=null) {
+                        if (value.length<3) {
+                          return "Title too short! Must be at least 3 characters.";
+                        }
+                      }
+                      return null;
+                    },
+                    onSaved: (value){
+                      _title = value;
+                    },
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                        labelText: "Caption",
+                    ),
+                    validator: (value) {
+                      return null;
+                    },
+                    onSaved: (value){
+                      _caption = value;
+                    },
+                  ),
+                  SizedBox(height: 30,),
+                  ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
+                          _postButtonPress();
+                        }
+
+                      },
+                      child: const Text("Upload Post"),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _postButtonPress,
-        tooltip: "Add",
-        child: const Icon(Icons.add),
       ),
     );
   }
 
-  _postButtonPress() {
+  void _postButtonPress() {
     _userConfirmation().then(
             (value) {
           if (value==true) {
@@ -181,9 +221,13 @@ class _AddPostState extends State<AddPost> {
         builder: (context) {
           return SimpleDialog(
             title: const Text(
-                "Are you your post is finished?\n"
-                    "You can't edit your post later."),
+                "Are you sure?"),
             children: [
+              const Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Text("Are you sure you're ready to submit?\n"
+                    "You can't edit or delete your post later!"),
+              ),
               SimpleDialogOption(
                 child: const Text("Yes"),
                 onPressed: () {

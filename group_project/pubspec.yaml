@@ -50,6 +50,7 @@ dependencies:
   uuid:
   shared_preferences:
   notifications: ^2.0.1
+  geocoding: ^2.0.2
   
   
   

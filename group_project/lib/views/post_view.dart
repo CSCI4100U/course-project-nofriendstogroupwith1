@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:group_project/models/db_utils.dart';
-
 import 'package:group_project/models/post_model.dart';
 import 'package:group_project/models/post.dart';
 import 'package:group_project/models/saved_model.dart';
+import 'package:geocoding/geocoding.dart';
+import 'dart:async';
 
 class PostView extends StatefulWidget {
   const PostView({Key? key}) : super(key: key);
-
-
 
   @override
   State<PostView> createState() => _PostViewState();
@@ -39,9 +38,8 @@ class _PostViewState extends State<PostView> {
 
     print("Getting image");
     image = Image.network(post.imageURL!,
-        errorBuilder: ((context, error, stackTrace)
-          => const Text("Network Error: Image not found.")
-    ));
+        errorBuilder: ((context, error, stackTrace) =>
+            const Text("Network Error: Image not found.")));
     print("image done");
 
     return ListView(
@@ -53,7 +51,30 @@ class _PostViewState extends State<PostView> {
             child: image,
           ),
         ),
-        _buildCaptionBox(post.caption??"[Missing Caption]"),
+        FutureBuilder(
+            future: placemarkFromCoordinates(
+                post.location!.latitude, post.location!.longitude),
+            builder: ((context, snapshot) {
+              if (!snapshot.hasData) {
+                return const LinearProgressIndicator();
+              }
+              return Container(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child: RichText(
+                      text: TextSpan(
+                          text: snapshot.data![0].street! +
+                              ", " +
+                              snapshot.data![0].locality! +
+                              " " +
+                              snapshot.data![0].administrativeArea!,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold))),
+                ),
+              );
+            })),
+        _buildCaptionBox(post.caption ?? "[Missing Caption]"),
       ],
     );
   }
@@ -67,7 +88,7 @@ class _PostViewState extends State<PostView> {
       post = argumentPost;
     }
 
-    bool deleted = post.reference==null;
+    bool deleted = post.reference == null;
     bool? saved;
     bool? hidden;
     if (!deleted) {
@@ -76,8 +97,8 @@ class _PostViewState extends State<PostView> {
     }
     return {
       'post': post,
-      'saved': saved??true,
-      'hidden': hidden??true,
+      'saved': saved ?? true,
+      'hidden': hidden ?? true,
       'deleted': deleted,
     };
   }
@@ -134,7 +155,8 @@ class _PostViewState extends State<PostView> {
                   setState(() {
                     if (saved) {
                       if (deleted) {
-                        _savedModel.unsavePost(null, post)
+                        _savedModel
+                            .unsavePost(null, post)
                             .then((value) => Navigator.of(context).pop());
                       } else {
                         _savedModel.unsavePost(null, post);
@@ -154,7 +176,8 @@ class _PostViewState extends State<PostView> {
             setState(() {
               if (hidden) {
                 if (deleted) {
-                  _savedModel.unsavePost(null, post)
+                  _savedModel
+                      .unsavePost(null, post)
                       .then((value) => Navigator.of(context).pop());
                 } else {
                   _savedModel.unsavePost(null, post);
@@ -170,7 +193,7 @@ class _PostViewState extends State<PostView> {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(post.title??"[Missing Title]"),
+            title: Text(post.title ?? "[Missing Title]"),
             actions: postActions,
           ),
           body: _buildPost(post),

@@ -69,17 +69,18 @@ class _HomePageState extends State<HomePage> {
       "Saved Posts",
     ];
 
+    final List<Widget> pageIcons = [
+      const Icon(Icons.map),
+      const Icon(Icons.bar_chart),
+      Container(),
+      const Icon(Icons.settings),
+      const Icon(Icons.bookmarks),
+    ];
+
     return Scaffold(
       appBar: AppBar(
+        leading: pageIcons[_page],
         title: Text(pageNames[_page]),
-        actions: [
-          //TODO: Dev page access: remove along with dev page.
-          IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, "/dev");
-              },
-              icon: const Icon(Icons.developer_mode)),
-        ],
       ),
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),

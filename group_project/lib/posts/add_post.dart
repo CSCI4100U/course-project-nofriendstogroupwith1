@@ -7,6 +7,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:group_project/camera/camera.dart';
 import 'package:group_project/constants.dart';
 
+import 'package:group_project/models/saved_model.dart';
+import 'package:group_project/models/settings_model.dart';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:group_project/models/post.dart';
 import 'package:group_project/models/post_model.dart';
@@ -33,7 +36,11 @@ class _AddPostState extends State<AddPost> {
 
   int? _dateTime;
 
-  PostModel _model = PostModel();
+  final PostModel _model = PostModel();
+  final SavedModel _savedMode = SavedModel();
+  final SettingsModel _settingsModel = SettingsModel();
+
+  bool isBusy = false;
 
   @override
   Widget build(BuildContext context) {
@@ -43,21 +50,46 @@ class _AddPostState extends State<AddPost> {
       //print("Check Location Permission: $permission");
     });
 
+    if (isBusy) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text("Add Post"),
+        ),
+        body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                CircularProgressIndicator(),
+                SizedBox(height: 10,),
+                Text("Uploading Post...")
+              ],
+            )
+        ),
+      );
+
+    }
+
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text("Add Post"),
+      ),
       body: Center(
         child: Column(
           children: [
             TextField(
-              decoration: InputDecoration(labelText: "Title:"),
-              style: TextStyle(fontSize: 30),
-              onChanged: (post_title) {
-                _title = post_title;
+              decoration: const InputDecoration(
+                  labelText: "Title:"
+              ),
+              style: const TextStyle(fontSize: 30),
+              onChanged: (postTitle) {
+                _title = postTitle;
               },
             ),
             TextField(
-              decoration: InputDecoration(labelText: "Caption"),
-              style: TextStyle(fontSize: 30),
+              decoration: const InputDecoration(
+                  labelText: "Caption"
+              ),
+              style: const TextStyle(fontSize: 30),
               onChanged: (cap) {
                 _caption = cap;
               },
@@ -68,19 +100,49 @@ class _AddPostState extends State<AddPost> {
                     : //Text("Yes pic"):
                     Text("no pic") //Image.file(File(widget.imagePath!)),
                 ),
-            ElevatedButton(onPressed: takepic, child: const Text("Take a pic")),
+            ElevatedButton(onPressed: takepic, child: const Text("Retake Photo")),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: userConfirmation,
+        onPressed: _postButtonPress,
         tooltip: "Add",
         child: const Icon(Icons.add),
       ),
     );
   }
 
-  Future _addToDb() async {
+  _postButtonPress() {
+    _userConfirmation().then(
+            (value) {
+          if (value==true) {
+            setState(() {
+              isBusy=true;
+              _addToDb().then((value) {
+                if (value = true) { // snackbar to tell user the post is created
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text(
+                          "Post Uploaded Successfully",
+                          style: TextStyle(fontSize: 14),
+                        )),
+                  );
+                  Navigator.of(context).pop();
+                } else {
+                  setState(() {
+                    isBusy=false;
+                  });
+                }
+              });
+            });
+          } else {
+            //Do nothing
+          }
+        }
+    );
+  }
+
+  Future<bool> _addToDb() async {
     print("Adding a new entry...");
 
     Position pos = await Geolocator.getCurrentPosition();
@@ -97,28 +159,30 @@ class _AddPostState extends State<AddPost> {
 
       await _model.insertPost(post_data);
 
-      // snackbar to tell user the post is created
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text(
-          "Post Created",
-          style: TextStyle(fontSize: 14),
-        )),
-      );
-      Navigator.pop(context);
+      var ref = await _model.insertPost(post_data);
+
+      bool saveOnPost = await _settingsModel.getBoolSetting(SettingsModel.settingAutoSave)??true;
+      if (saveOnPost) {
+        post_data.reference = ref;
+        await _savedMode.savePost(null, post_data);
+      }
+
+      return true;
     } else {
       print("Failed to upload image!");
+      return false;
     }
   }
 
 // this method is used to confirm information inputed by the user before creating the post
-  Future userConfirmation() async {
-    var confirmation = await showDialog(
+  Future<bool> _userConfirmation() async {
+    bool confirmation = await showDialog(
         context: context,
         builder: (context) {
           return SimpleDialog(
-            title: Text(
-                "Is the following information correct?\n\n Title: $_title\n Caption: $_caption"),
+            title: const Text(
+                "Are you your post is finished?\n"
+                    "You can't edit your post later."),
             children: [
               SimpleDialogOption(
                 child: const Text("Yes"),
@@ -135,14 +199,7 @@ class _AddPostState extends State<AddPost> {
             ],
           );
         });
-
     print("User confirmation of post: $confirmation");
-
-    if (confirmation == true) {
-      _addToDb();
-    } else {
-      confirmation == false;
-    }
 
     return confirmation;
   }

@@ -4,9 +4,12 @@
 
 # Mobile Group Project Technical Report 
 
-CSCI 4100U - Mobile Devices
-Dr. Michael Miljanovic
+#### CSCI 4100U - Mobile Devices
+
+*Dr. Michael Miljanovic*
+
 December 6th 2022
+
 
 ### Group Members: 
 

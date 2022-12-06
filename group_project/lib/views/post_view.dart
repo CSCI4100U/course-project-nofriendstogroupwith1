@@ -35,9 +35,6 @@ class _PostViewState extends State<PostView> {
     );
   }
 
-
-
-
   Widget _buildPost(Post post) {
     late Widget image;
 
@@ -46,6 +43,9 @@ class _PostViewState extends State<PostView> {
         errorBuilder: ((context, error, stackTrace) =>
             const Text("Network Error: Image not found.")));
     print("image done");
+
+    var placemark = placemarkFromCoordinates(
+        post.location!.latitude, post.location!.longitude);
 
     return ListView(
       children: [
@@ -57,8 +57,7 @@ class _PostViewState extends State<PostView> {
           ),
         ),
         FutureBuilder(
-            future: placemarkFromCoordinates(
-                post.location!.latitude, post.location!.longitude),
+            future: placemark,
             builder: ((context, snapshot) {
               if (!snapshot.hasData) {
                 return const LinearProgressIndicator();
@@ -75,24 +74,20 @@ class _PostViewState extends State<PostView> {
                               snapshot.data![0].administrativeArea!,
                           style: TextStyle(
                               color: Colors.black,
-                              fontWeight: FontWeight.bold
-                          )
-                      )
-                  ),
+                              fontWeight: FontWeight.bold))),
                 ),
               );
             })),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: FutureBuilder(
-            future: post.GetTimeAsString(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text(snapshot.data!);
-              }
-              return Text("Loading date...");
-            }
-          ),
+              future: post.GetTimeAsString(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(snapshot.data!);
+                }
+                return Text("Loading date...");
+              }),
         ),
         _buildCaptionBox(post.caption ?? "[Missing Caption]"),
       ],
@@ -206,13 +201,13 @@ class _PostViewState extends State<PostView> {
                     _savedModel
                         .unsavePost(null, post)
                         .then((value) => Navigator.of(context).pop());
-                    hideFromMap=false;
+                    hideFromMap = false;
                   } else {
                     _savedModel.unsavePost(null, post);
                   }
                 } else {
                   _savedModel.hidePost(null, post);
-                  hideFromMap=true;
+                  hideFromMap = true;
                 }
               });
             },

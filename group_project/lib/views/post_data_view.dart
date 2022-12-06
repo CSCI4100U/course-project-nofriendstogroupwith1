@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:group_project/models/post_model.dart';
-import "dart:async";
+import 'package:community_charts_flutter/community_charts_flutter.dart'
+    as charts;
 
 class PostDataView extends StatefulWidget {
   const PostDataView({Key? key}) : super(key: key);
@@ -60,21 +61,53 @@ class _PostDataViewState extends State<PostDataView> {
           );
           data.sort((a, b) => a.daysAgo.compareTo(b.daysAgo));
 
+          //generate data for the chart, last 7 days will 0 filled in
+          const _daysToDraw = 7;
+          List<_PostsOnDay> chartData = [];
+          for (int i = 0; i < _daysToDraw; i++) {
+            chartData.add(_PostsOnDay(i, _postsPerDay[i] ?? 0));
+          }
+          charts.Series<_PostsOnDay, int> charSeries = charts.Series(
+              data: chartData,
+              id: "Posts Per Day",
+              domainFn: (post, index) {
+                return (post as _PostsOnDay).daysAgo;
+              },
+              measureFn: (datum, index) => (datum as _PostsOnDay).posts,
+              displayName: "Number of Posts in last 7 Days");
+
+          //--------------Draw--------------
           return SingleChildScrollView(
-            child: DataTable(
-              columns: const [
-                DataColumn(label: Text("Days Ago")),
-                DataColumn(label: Text("Number of Posts"))
-              ],
-              rows: [
-                for (int i = 0; i < data.length; i++)
-                  DataRow(cells: [
-                    DataCell(Text(data[i].daysAgo.toString())),
-                    DataCell(Text(data[i].posts.toString()))
-                  ])
-              ],
-            ),
-          );
+              child: Column(
+            children: [
+              Container(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Text("Posts over the last 7 days"),
+                ),
+              ),
+              Container(
+                height: 300,
+                child: charts.LineChart(
+                  [charSeries],
+                ),
+              ),
+              DataTable(
+                columns: const [
+                  DataColumn(label: Text("Days Ago")),
+                  DataColumn(label: Text("Number of Posts"))
+                ],
+                rows: [
+                  for (int i = 0; i < data.length; i++)
+                    DataRow(cells: [
+                      DataCell(Text(data[i].daysAgo.toString())),
+                      DataCell(Text(data[i].posts.toString()))
+                    ])
+                ],
+              ),
+            ],
+          ));
         }));
   }
 }

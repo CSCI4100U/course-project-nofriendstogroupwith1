@@ -99,6 +99,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.16.0"
+  community_charts_common:
+    dependency: transitive
+    description:
+      name: community_charts_common
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
+  community_charts_flutter:
+    dependency: "direct main"
+    description:
+      name: community_charts_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   cross_file:
     dependency: transitive
     description:

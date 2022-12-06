@@ -53,6 +53,7 @@ dependencies:
   geocoding: ^2.0.2
   flutter_i18n:
   flutter_localization:
+  community_charts_flutter:
   
   
 dev_dependencies:

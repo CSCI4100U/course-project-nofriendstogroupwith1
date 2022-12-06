@@ -49,7 +49,15 @@ class _MapView extends State<MapView> {
   @override
   void initState() {
     super.initState();
-    subscription = Geolocator.getPositionStream().listen(updatePosition);
+
+    Geolocator.isLocationServiceEnabled().then((value) {
+      Geolocator.requestPermission().then((value) {
+        Geolocator.checkPermission().then((value) {
+          subscription = Geolocator.getPositionStream().listen(updatePosition);
+        });
+      });
+    });
+
   }
 
   @override
@@ -57,6 +65,7 @@ class _MapView extends State<MapView> {
     super.dispose();
     if (subscription!=null) {
       subscription!.cancel();
+      subscription=null;
     }
   }
 
@@ -65,13 +74,13 @@ class _MapView extends State<MapView> {
     if (streamedPosition!=null) {
       mapController.move(
           LatLng(streamedPosition!.latitude, streamedPosition!.longitude), mapController.zoom);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text(
-              "Map Centered",
-              style: TextStyle(fontSize: 14),
-            )),
-      );
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text(
+                  "Map Centered",
+                  style: TextStyle(fontSize: 14),
+                )),
+          );
       //Otherwise fall back to asking for a current location.
     }
   }
@@ -82,6 +91,8 @@ class _MapView extends State<MapView> {
     await Geolocator.isLocationServiceEnabled();
     await Geolocator.requestPermission();
     await Geolocator.checkPermission();
+
+    subscription ??= Geolocator.getPositionStream().listen(updatePosition);
 
     currentPosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best);

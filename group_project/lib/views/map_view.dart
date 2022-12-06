@@ -73,12 +73,28 @@ class _MapView extends State<MapView> {
     return allPosts;
   }
 
+  Widget _buildMarker(Post post) {
+    return GestureDetector(
+      onTap: () {
+        _showPost(post);
+      },
+      child: Container(
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.blue ,width: 4)),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Image.network(post.imageURL!, fit: BoxFit.fill),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Geolocator.isLocationServiceEnabled().then((value) => null);
     Geolocator.requestPermission().then((value) => null);
     Geolocator.checkPermission().then((LocationPermission permission) {
-      //print("Check Location Permission: $permission");
+      print("Check Location Permission: $permission");
+
     });
 
     return Stack(
@@ -123,15 +139,18 @@ class _MapView extends State<MapView> {
                     //post icons
                     for (int i = 0; i < snapshot.data!.length; i++)
                       Marker(
+                        height: 60,
+                        width: 60,
                         point: snapshot.data![i].location ??
                             AppConstants.defaultLocation,
-                        builder: (context) => IconButton(
+                        builder: (context) => _buildMarker(snapshot.data![i]),
+                        /*builder: (context) => IconButton(
                             onPressed: (() => _showPost(snapshot.data![i])),
                             iconSize: 45,
                             icon: const Icon(
                               Icons.location_pin,
                               color: Colors.blue,
-                            )),
+                            )),*/
                       )
                   ])
                 ],

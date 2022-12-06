@@ -53,7 +53,7 @@ class _MapView extends State<MapView> {
     Geolocator.isLocationServiceEnabled().then((value) {
       Geolocator.requestPermission().then((value) {
         Geolocator.checkPermission().then((value) {
-          subscription = Geolocator.getPositionStream().listen(updatePosition);
+          subscription ??= Geolocator.getPositionStream().listen(updatePosition);
         });
       });
     });

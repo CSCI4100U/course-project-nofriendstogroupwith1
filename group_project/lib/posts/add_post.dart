@@ -81,11 +81,6 @@ class _AddPostState extends State<AddPost> {
 
     final double sizeToFit = min(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
 
-    if (_imagePath==null) {
-      Navigator.of(context).pop();
-      return Container();
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add Post"),
@@ -99,7 +94,10 @@ class _AddPostState extends State<AddPost> {
                 child: const Text("Retake Photo")
             ),
             SizedBox(
-                child: Image.file(File(_imagePath!), fit: BoxFit.scaleDown, width: sizeToFit, height: sizeToFit,)//Image.file(File(widget.imagePath!)),
+                child: _imagePath != null
+                    ? Image.file(File(_imagePath!), fit: BoxFit.scaleDown, width: sizeToFit, height: sizeToFit,)
+                    : //Text("Yes pic"):
+                Text("no pic") //Image.file(File(widget.imagePath!)),
             ),
             Form(
               key: _formKey,

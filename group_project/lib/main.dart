@@ -4,7 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:group_project/camera/camera.dart';
 import 'package:group_project/constants.dart';
 import 'package:group_project/models/db_utils.dart';
-import 'package:group_project/posts/add_post.dart';
+import 'package:group_project/views/add_post.dart';
 import 'package:group_project/views/home_page.dart';
 import 'package:group_project/views/map_view.dart';
 import 'package:group_project/views/post_view.dart';

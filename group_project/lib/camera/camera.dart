@@ -3,7 +3,7 @@ import 'package:camera/camera.dart';
 import 'dart:io';
 import 'dart:async';
 
-import 'package:group_project/posts/add_post.dart';
+import 'package:group_project/views/add_post.dart';
 
 class Camera extends StatefulWidget {
   const Camera({Key? key, required this.cameras}) : super(key: key);

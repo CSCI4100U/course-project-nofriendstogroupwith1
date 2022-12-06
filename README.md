@@ -15,11 +15,11 @@ Group members (3-5) (no Student IDs, only names and github usernames):
 
 1.  Alexander Naylor https://github.com/AlexNayl
 
-3.  Dylan Moore https://github.com/Dym99
+2.  Dylan Moore https://github.com/Dym99
 
-4.  Sukhpreet Bansal https://github.com/Sukhpreet-7
+3.  Sukhpreet Bansal https://github.com/Sukhpreet-7
 
-5.  Hamza Khan https://github.com/HKhan702
+4.  Hamza Khan https://github.com/HKhan702
 
 ## Overview
 This group project is designed for you to demonstrate the skills that you have learned in this course.  The final project that you submit in the last week of classes will be a completed mobile application.  Non-functional requirements, especially those associated with production-readiness, will be considered extremely important when marking this project.  You are expected to work in a group of three to five students when completing this project.  Students are not permitted to work alone on the project, as this eliminates one of the learning objectives of this assessment. 

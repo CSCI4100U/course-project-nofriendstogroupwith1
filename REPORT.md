@@ -47,7 +47,8 @@ Dylan:
 
 Sukhpreet:
 - Dialogs
-- Snackbars and other quality-of-life features throughout the app 
+- Snackbars and Notifications 
+- Other quality-of-life features throughout the app 
 
 Hamza: 
 - Add-post page

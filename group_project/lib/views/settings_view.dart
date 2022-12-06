@@ -12,6 +12,7 @@ class SettingsView extends StatefulWidget {
 class _SettingsViewState extends State<SettingsView> {
   final SettingsModel _settingsModel = SettingsModel();
 
+  bool _pushNotifications = true;
   bool _autoSave = true;
   bool _12Hour = false;
   String _language = "en-US";
@@ -26,6 +27,9 @@ class _SettingsViewState extends State<SettingsView> {
     _12Hour =
         await _settingsModel.getBoolSetting(SettingsModel.setting12Hour) ??
             false;
+    _pushNotifications = await _settingsModel
+            .getBoolSetting(SettingsModel.settingNotifications) ??
+        true;
   }
 
   Widget _buildSetting({String label = "", required Widget child}) {
@@ -89,6 +93,17 @@ class _SettingsViewState extends State<SettingsView> {
                           name: SettingsModel.setting12Hour, value: value);
                     });
                   }),
+              _buildToggleSetting(
+                  label: "Push Notifications",
+                  value: _pushNotifications,
+                  onChanged: (value) {
+                    setState(() {
+                      _pushNotifications = value;
+                      _settingsModel.setBoolSetting(
+                          name: SettingsModel.settingNotifications,
+                          value: value);
+                    });
+                  }),
               _buildSettingHeader("Localization"),
               _buildSetting(
                 label: SettingsModel.settingLanguage,
@@ -139,7 +154,11 @@ class _SettingsViewState extends State<SettingsView> {
                           applicationName: "Post It, Pin It",
                           applicationVersion: "1.0.0",
                           children: [
-                            const Padding(padding: EdgeInsets.only(top:30),child: Text("This app was created by Alexander Naylor, Dylan Moore, Sukhpreet Bansal and Hamza Khan."),),
+                            const Padding(
+                              padding: EdgeInsets.only(top: 30),
+                              child: Text(
+                                  "This app was created by Alexander Naylor, Dylan Moore, Sukhpreet Bansal and Hamza Khan."),
+                            ),
                           ],
                           applicationLegalese:
                               "Copyright 2022 © Alexander Naylor, Dylan Moore, Sukhpreet Bansal and Hamza Khan.",

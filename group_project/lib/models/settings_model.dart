@@ -1,18 +1,20 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsModel {
-
   static const String settingAutoSave = "autoSave";
   static const String settingLanguage = "language";
   static const String setting12Hour = "12Hour";
+  static const String settingNotifications = "notifications";
 
-  Future<void> setStringSetting({required String name, required String value}) async {
+  Future<void> setStringSetting(
+      {required String name, required String value}) async {
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.setString(name, value);
   }
 
-  Future<void> setBoolSetting({required String name, required bool value}) async {
+  Future<void> setBoolSetting(
+      {required String name, required bool value}) async {
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.setBool(name, value);
@@ -41,5 +43,4 @@ class SettingsModel {
 
     return prefs.getInt(name);
   }
-
 }

@@ -21,6 +21,33 @@ December 6th 2022
 
 4.  Hamza Khan https://github.com/HKhan702
 
+### Notes to build:
+
+**Requires Plugins:**
+
+- flutter_map: ^1.1.1
+- latlong2:
+- sqflite:
+- timezone:
+- firebase_core:
+- cloud_firestore:
+- firebase_storage:
+- geopoint: ^1.0.0
+- geolocator: ^9.0.2
+- camera: #^0.10.0+4
+- uuid:
+- shared_preferences:
+- notifications: ^2.0.1
+- geocoding: ^2.0.2
+- flutter_i18n:
+- flutter_localization:
+- community_charts_flutter:
+  
+**Aside from the usual setup for firebase, requires:**
+
+- (app/build.gradle) compileSdkVersion 33
+- (app/build.gradle) minSdkVersion 21
+
 
 ### Overview of Project 
 For this project we created a social media app that allows users to upload geolocated photos (of their current location) onto a map. The app consists of several screens. All screens have a navigation bar at the bottom to traverse between screens.

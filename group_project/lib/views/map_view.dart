@@ -21,7 +21,7 @@ class MapView extends StatefulWidget {
 class _MapView extends State<MapView> {
   late List<Post> posts;
   final MapController mapController = MapController();
-  var zoomValue = 14.0;
+  var zoomValue = 16.0;
 
   static const double maxZoom = 18;
   static const double minZoom = 5;
@@ -178,7 +178,7 @@ class _MapView extends State<MapView> {
             style: ElevatedButton.styleFrom(shape: const CircleBorder()),
             onPressed: () {
               zoomValue = min(zoomValue += 0.2, maxZoom);
-              mapController.move(AppConstants.defaultLocation, zoomValue);
+              mapController.move(mapController.center, zoomValue);
             },
             child: const Icon(Icons.zoom_in),
           ),
@@ -186,13 +186,13 @@ class _MapView extends State<MapView> {
 
         // this button is placed on the map and allows user to zoom out of the map
         Positioned(
-          top: 20,
-          right: 50,
+          top: 70,
+          right: 0,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(shape: const CircleBorder()),
             onPressed: () {
               zoomValue = max(zoomValue -= 0.2, minZoom);
-              mapController.move(AppConstants.defaultLocation, zoomValue);
+              mapController.move(mapController.center, zoomValue);
             },
             child: const Icon(Icons.zoom_out),
           ),

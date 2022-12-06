@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:group_project/camera/camera.dart';
 import 'package:group_project/constants.dart';
 
@@ -67,15 +68,15 @@ class _AddPostState extends State<AddPost> {
     if (isBusy) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text("Add Post"),
+          title: Text(FlutterI18n.translate(context, "add.page")),
         ),
         body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                CircularProgressIndicator(),
-                SizedBox(height: 10,),
-                Text("Uploading Post...")
+              children: [
+                const CircularProgressIndicator(),
+                const SizedBox(height: 10,),
+                Text(FlutterI18n.translate(context, "add.uploading"))
               ],
             )
         ),
@@ -89,36 +90,36 @@ class _AddPostState extends State<AddPost> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Post"),
+        title: Text(FlutterI18n.translate(context, "add.page")),
       ),
       body: Center(
         child: ListView(
-          padding: EdgeInsets.all(30),
+          padding: const EdgeInsets.all(30),
           children: [
             ElevatedButton(
                 onPressed: takepic,
-                child: const Text("Retake Photo")
+                child: Text(FlutterI18n.translate(context, "add.retakePhoto"))
             ),
             SizedBox(
                 child: _imagePath != null
                     ? Image.file(File(_imagePath!), fit: BoxFit.scaleDown, width: sizeToFit, height: sizeToFit,)
                     : //Text("Yes pic"):
-                Center(child: Text("no pic")) //Image.file(File(widget.imagePath!)),
+                Center(child: Text("Error: No photo?")) //Image.file(File(widget.imagePath!)),
             ),
             Form(
               key: _formKey,
               child: Column(
                 children: [
                   TextFormField(
-                    decoration: const InputDecoration(
-                        labelText: "Title:"
+                    decoration: InputDecoration(
+                        labelText: FlutterI18n.translate(context, "add.title")
                     ),
                     style: const TextStyle(fontSize: 24),
                     maxLength: 20,
                     validator: (value) {
                       if (value!=null) {
                         if (value.length<3) {
-                          return "Title too short! Must be at least 3 characters.";
+                          return FlutterI18n.translate(context, "add.titleTooShort");
                         }
                       }
                       return null;
@@ -128,8 +129,8 @@ class _AddPostState extends State<AddPost> {
                     },
                   ),
                   TextFormField(
-                    decoration: const InputDecoration(
-                        labelText: "Caption",
+                    decoration: InputDecoration(
+                        labelText: FlutterI18n.translate(context, "add.caption"),
                     ),
                     validator: (value) {
                       return null;
@@ -138,7 +139,7 @@ class _AddPostState extends State<AddPost> {
                       _caption = value;
                     },
                   ),
-                  SizedBox(height: 30,),
+                  const SizedBox(height: 30,),
                   ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
@@ -147,7 +148,7 @@ class _AddPostState extends State<AddPost> {
                         }
 
                       },
-                      child: const Text("Upload Post"),
+                      child: Text(FlutterI18n.translate(context, "add.upload")),
                   ),
                 ],
               ),
@@ -167,10 +168,10 @@ class _AddPostState extends State<AddPost> {
               _addToDb().then((value) {
                 if (value = true) { // snackbar to tell user the post is created
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
+                    SnackBar(
                         content: Text(
-                          "Post Uploaded Successfully",
-                          style: TextStyle(fontSize: 14),
+                          FlutterI18n.translate(context, "add.uploadSuccess"),
+                          style: const TextStyle(fontSize: 14),
                         )),
                   );
                   Navigator.of(context).pop();
@@ -226,22 +227,20 @@ class _AddPostState extends State<AddPost> {
         context: context,
         builder: (context) {
           return SimpleDialog(
-            title: const Text(
-                "Are you sure?"),
+            title: Text(FlutterI18n.translate(context, "add.postConfirm.title")),
             children: [
-              const Padding(
-                padding: EdgeInsets.all(20.0),
-                child: Text("Are you sure you're ready to submit?\n"
-                    "You can't edit or delete your post later!"),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(FlutterI18n.translate(context, "add.postConfirm.text")),
               ),
               SimpleDialogOption(
-                child: const Text("Yes"),
+                child: Text(FlutterI18n.translate(context, "add.postConfirm.yes")),
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
               ),
               SimpleDialogOption(
-                child: const Text("No"),
+                child: Text(FlutterI18n.translate(context, "add.postConfirm.no")),
                 onPressed: () {
                   Navigator.of(context).pop(false);
                 },

@@ -1,7 +1,31 @@
 {
   "map" : {
     "page" : "Map",
-    "loading" : "Loading Posts..."
+    "loading" : "Loading Posts...",
+    "centered" : "Map Centered"
+  },
+  "stats" : {
+    "page" : "Post Stats",
+    "postsOverLast7" : "Posts over the last 7 days",
+    "daysAgo" : "Days Ago",
+    "numPosts" : "Number of Posts"
+  },
+  "add" : {
+    "page" : "Add Post",
+    "takePhoto" : "Take a photo!",
+    "retakePhoto" : "Retake Photo",
+    "title" : "Title",
+    "caption" : "Caption",
+    "upload" : "Upload Post",
+    "uploading" : "Uploading post...",
+    "uploadSuccess" : "Post uploaded successfully",
+    "titleTooShort" : "Title is too short! Must be at least 3 characters.",
+    "postConfirm" : {
+      "title" : "Are you sure?",
+      "text" : "Are you sure you're ready to submit?\nYou can't edit or delete your post later!",
+      "yes" : "Yes",
+      "no" : "No"
+    }
   },
   "settings" : {
     "page" : "Settings",
@@ -19,5 +43,14 @@
       "heading" : "Legal",
       "about" : "About"
     }
+  },
+  "saved" : {
+    "page" : "Saved",
+    "savedTab" : "Saved Posts",
+    "hiddenTab" : "Hidden Posts"
+  },
+  "post" : {
+    "saveTooltip" : "Save Post",
+    "hideTooltip" : "Hide Post"
   }
 }

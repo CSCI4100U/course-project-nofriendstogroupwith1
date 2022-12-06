@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:group_project/models/post_model.dart';
 import 'package:community_charts_flutter/community_charts_flutter.dart'
     as charts;
@@ -32,9 +33,10 @@ class _PostDataViewState extends State<PostDataView> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const [
-                    CircularProgressIndicator(),
-                    Text("Loading Posts")
+                  children: [
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 10,),
+                    Text(FlutterI18n.translate(context, "map.loading"))
                   ],
                 ));
           }
@@ -84,7 +86,7 @@ class _PostDataViewState extends State<PostDataView> {
                 alignment: Alignment.topCenter,
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Text("Posts over the last 7 days"),
+                  child: Text(FlutterI18n.translate(context, "stats.postsOverLast7")),
                 ),
               ),
               Container(
@@ -94,9 +96,9 @@ class _PostDataViewState extends State<PostDataView> {
                 ),
               ),
               DataTable(
-                columns: const [
-                  DataColumn(label: Text("Days Ago")),
-                  DataColumn(label: Text("Number of Posts"))
+                columns: [
+                  DataColumn(label: Text(FlutterI18n.translate(context, "stats.daysAgo"))),
+                  DataColumn(label: Text(FlutterI18n.translate(context, "stats.numPosts")))
                 ],
                 rows: [
                   for (int i = 0; i < data.length; i++)

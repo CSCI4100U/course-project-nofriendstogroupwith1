@@ -1,13 +1,37 @@
 {
   "map" : {
     "page" : "Carte",
-    "loading" : "Chargement des messages..."
+    "loading" : "Chargement des messages...",
+    "centered" : "Carte Centrée"
+  },
+  "stats" : {
+    "page" : "Statistiques",
+    "postsOverLast7" : "Nombre de publications des 7 derniers jours",
+    "daysAgo" : "Il y a Quelques Jours",
+    "numPosts" : "Nombre de Messages"
+  },
+  "add" : {
+    "page" : "Publier",
+    "takePhoto" : "Prendre une photo!",
+    "retakePhoto" : "Reprendre la Photo",
+    "title" : "Titre",
+    "caption" : "Sous-Titre",
+    "upload" : "Publier Message",
+    "uploading" : "Publiez le message...",
+    "uploadSuccess" : "Message publié.",
+    "titleTooShort" : "Le titre est trop court! Il doit comporter au moins 3 caractères.",
+    "postConfirm" : {
+      "title" : "Êtes-vous sûr?",
+      "text" : "Êtes-vous sûr d'être prêt à publier?\nVous ne pourrez pas modifier ou supprimer votre message!",
+      "yes" : "Oui",
+      "no" : "Non"
+    }
   },
   "settings" : {
     "page" : "Paramètres",
     "general" : {
       "heading" : "Général",
-      "autoSave" : "Messages de sauvegarde automatique ajoutés",
+      "autoSave" : "Messages de sauve automatique ajoutés",
       "12hour" : "Utiliser l'horloge de 12 heures",
       "notify" : "Activer les notifications push"
     },
@@ -17,7 +41,16 @@
     },
     "legal" : {
       "heading" : "Légal",
-      "about" : "À propos"
+      "about" : "À Propos"
     }
+  },
+  "saved" : {
+    "page" : "Sauvés",
+    "savedTab" : "Messages Sauvés",
+    "hiddenTab" : "Messages Cachés"
+  },
+  "post" : {
+    "saveTooltip" : "Sauver Cet Message",
+    "hideTooltip" : "Cacher Cet Message"
   }
 }

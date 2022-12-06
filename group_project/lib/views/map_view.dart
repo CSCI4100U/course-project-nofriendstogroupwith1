@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:group_project/models/post.dart';
@@ -80,11 +81,12 @@ class _MapView extends State<MapView> {
       ScaffoldMessenger.of(context)
           .clearSnackBars(); //Clear existing snackbars so this one feels snappier.
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
             content: Text(
-          "Map Centered",
-          style: TextStyle(fontSize: 14),
-        )),
+              FlutterI18n.translate(context, "map.centered"),
+              style: const TextStyle(fontSize: 14),
+            )
+        ),
       );
       //Otherwise fall back to asking for a current location.
     }
@@ -151,9 +153,10 @@ class _MapView extends State<MapView> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
-                        CircularProgressIndicator(),
-                        Text("Loading Posts")
+                      children: [
+                        const CircularProgressIndicator(),
+                        const SizedBox(height: 10,),
+                        Text(FlutterI18n.translate(context, "map.loading"))
                       ],
                     ));
               }

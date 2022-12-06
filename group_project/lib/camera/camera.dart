@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'dart:io';
 import 'dart:async';
 
@@ -121,7 +122,7 @@ class _CameraState extends State<Camera> {
                           },
                           icon: const Icon(Icons.arrow_back, color: Colors.white,)
                       ),
-                      const Text("Take a photo!", style: TextStyle(color: Colors.white)),
+                      Text(FlutterI18n.translate(context, "add.takePhoto"), style: TextStyle(color: Colors.white)),
                       IconButton(
                           onPressed: (){
                             //'hacky' way to toggle between exactly 2 cameras

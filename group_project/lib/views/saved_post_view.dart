@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:group_project/models/post.dart';
 import 'package:group_project/models/post_model.dart';
 import 'package:group_project/models/saved.dart';
@@ -12,10 +13,7 @@ class SavedPostView extends StatefulWidget {
 }
 
 class _SavedPostViewState extends State<SavedPostView> with SingleTickerProviderStateMixin {
-  static const List<Tab> _tabs = <Tab>[
-    Tab(text: 'Saved'),
-    Tab(text: 'Hidden'),
-  ];
+
 
   late final TabController _tabController;
 
@@ -106,6 +104,11 @@ class _SavedPostViewState extends State<SavedPostView> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
+    final List<Tab> _tabs = <Tab>[
+      Tab(text: FlutterI18n.translate(context, "saved.savedTab")),
+      Tab(text: FlutterI18n.translate(context, "saved.hiddenTab")),
+    ];
+
     return FutureBuilder(
       future: _initLists(),
       builder: (context, snapshot) {

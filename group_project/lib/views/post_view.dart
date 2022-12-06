@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:group_project/models/db_utils.dart';
 import 'package:group_project/models/post_model.dart';
 import 'package:group_project/models/post.dart';
@@ -188,7 +189,7 @@ class _PostViewState extends State<PostView> {
                       }
                     });
                   },
-                  tooltip: "Save Post",
+                  tooltip: FlutterI18n.translate(context, "post.saveTooltip"),
                   icon: Icon(saveIcon)),
             );
           }
@@ -211,7 +212,7 @@ class _PostViewState extends State<PostView> {
                 }
               });
             },
-            tooltip: "Hide Post",
+            tooltip: FlutterI18n.translate(context, "post.hideTooltip"),
             icon: Icon(hideIcon),
           ));
 

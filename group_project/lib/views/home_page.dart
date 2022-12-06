@@ -62,11 +62,11 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final List<String> pageNames = [
-      "Map",
-      "Post Stats",
+      FlutterI18n.translate(context, "map.page"),
+      FlutterI18n.translate(context, "stats.page"),
       "", //Page 3 is empty (Just using button for add post)
       FlutterI18n.translate(context, "settings.page"),
-      "Saved Posts",
+      FlutterI18n.translate(context, "saved.page"),
     ];
 
     final List<Widget> pageIcons = [
@@ -101,16 +101,16 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.map_outlined),
             activeIcon: Icon(Icons.map),
-            label: "Map",
+            label: FlutterI18n.translate(context, "map.page"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart_outlined),
             activeIcon: Icon(Icons.bar_chart),
-            label: "Post Stats",
+            label: FlutterI18n.translate(context, "stats.page"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
-            label: "Add Post",
+            label: FlutterI18n.translate(context, "add.page"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings_outlined),
@@ -120,7 +120,7 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.bookmarks_outlined),
             activeIcon: Icon(Icons.bookmarks),
-            label: "Saved Posts",
+            label: FlutterI18n.translate(context, "saved.page"),
           ),
         ],
         onTap: (value) {

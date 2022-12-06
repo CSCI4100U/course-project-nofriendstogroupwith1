@@ -167,7 +167,7 @@ class _SettingsViewState extends State<SettingsView> {
                                       ListTile(title: Text("Alexander Naylor"), subtitle: Text("Maps and Geolocation"),),
                                       ListTile(title: Text("Dylan Moore"), subtitle: Text("Database and Local Storage"),),
                                       ListTile(title: Text("Sukhpreet Bansal"), subtitle: Text("Dialogs and Snackbars"),),
-                                      ListTile(title: Text("Hamza Khan"), subtitle: Text("Camera and Localisation"),),
+                                      ListTile(title: Text("Hamza Khan"), subtitle: Text("Camera and Post Creation"),),
                                     ],
                                   ),
                                 ),

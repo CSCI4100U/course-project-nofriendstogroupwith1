@@ -57,16 +57,16 @@ class _AddPostState extends State<AddPost> {
         ),
         body: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                CircularProgressIndicator(),
-                SizedBox(height: 10,),
-                Text("Uploading Post...")
-              ],
-            )
-        ),
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            CircularProgressIndicator(),
+            SizedBox(
+              height: 10,
+            ),
+            Text("Uploading Post...")
+          ],
+        )),
       );
-
     }
 
     return Scaffold(
@@ -77,18 +77,14 @@ class _AddPostState extends State<AddPost> {
         child: Column(
           children: [
             TextField(
-              decoration: const InputDecoration(
-                  labelText: "Title:"
-              ),
+              decoration: const InputDecoration(labelText: "Title:"),
               style: const TextStyle(fontSize: 30),
               onChanged: (postTitle) {
                 _title = postTitle;
               },
             ),
             TextField(
-              decoration: const InputDecoration(
-                  labelText: "Caption"
-              ),
+              decoration: const InputDecoration(labelText: "Caption"),
               style: const TextStyle(fontSize: 30),
               onChanged: (cap) {
                 _caption = cap;
@@ -100,7 +96,7 @@ class _AddPostState extends State<AddPost> {
                     : //Text("Yes pic"):
                     Text("no pic") //Image.file(File(widget.imagePath!)),
                 ),
-            ElevatedButton(onPressed: takepic, child: const Text("Retake Photo")),
+            ElevatedButton(onPressed: takepic, child: const Text("Take Photo")),
           ],
         ),
       ),
@@ -113,33 +109,32 @@ class _AddPostState extends State<AddPost> {
   }
 
   _postButtonPress() {
-    _userConfirmation().then(
-            (value) {
-          if (value==true) {
-            setState(() {
-              isBusy=true;
-              _addToDb().then((value) {
-                if (value = true) { // snackbar to tell user the post is created
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text(
-                          "Post Uploaded Successfully",
-                          style: TextStyle(fontSize: 14),
-                        )),
-                  );
-                  Navigator.of(context).pop();
-                } else {
-                  setState(() {
-                    isBusy=false;
-                  });
-                }
+    _userConfirmation().then((value) {
+      if (value == true) {
+        setState(() {
+          isBusy = true;
+          _addToDb().then((value) {
+            if (value = true) {
+              // snackbar to tell user the post is created
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content: Text(
+                  "Post Uploaded Successfully",
+                  style: TextStyle(fontSize: 14),
+                )),
+              );
+              Navigator.of(context).pop();
+            } else {
+              setState(() {
+                isBusy = false;
               });
-            });
-          } else {
-            //Do nothing
-          }
-        }
-    );
+            }
+          });
+        });
+      } else {
+        //Do nothing
+      }
+    });
   }
 
   Future<bool> _addToDb() async {
@@ -161,7 +156,9 @@ class _AddPostState extends State<AddPost> {
 
       var ref = await _model.insertPost(post_data);
 
-      bool saveOnPost = await _settingsModel.getBoolSetting(SettingsModel.settingAutoSave)??true;
+      bool saveOnPost =
+          await _settingsModel.getBoolSetting(SettingsModel.settingAutoSave) ??
+              true;
       if (saveOnPost) {
         post_data.reference = ref;
         await _savedMode.savePost(null, post_data);
@@ -180,9 +177,8 @@ class _AddPostState extends State<AddPost> {
         context: context,
         builder: (context) {
           return SimpleDialog(
-            title: const Text(
-                "Are you your post is finished?\n"
-                    "You can't edit your post later."),
+            title: const Text("Are you sure your post is finished?\n"
+                "You can't edit your post later."),
             children: [
               SimpleDialogOption(
                 child: const Text("Yes"),
@@ -225,10 +221,9 @@ class _AddPostState extends State<AddPost> {
     _dateTime = DateTime.now().millisecondsSinceEpoch;
 
     var result = await Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) {
-            return Camera(cameras: cameras);
-          }
-        ),
+      MaterialPageRoute(builder: (context) {
+        return Camera(cameras: cameras);
+      }),
     );
 
     if (result != null && result is String) {

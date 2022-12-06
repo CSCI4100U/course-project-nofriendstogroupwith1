@@ -98,18 +98,6 @@ class _CameraState extends State<Camera> {
                       ),
                   ),
                 ),
-                /*
-                AppBar(
-                  title: const Text("Take a picture!"),
-                  backgroundColor: Colors.transparent,
-                  actions: [
-                    IconButton(onPressed: () {
-                      //'hacky' way to toggle between exactly 2 cameras
-                      cameraNumber = 1-cameraNumber;
-                      onNewCameraSelected(widget.cameras[cameraNumber]);
-                    }, icon: const Icon(Icons.sync))
-                  ],
-                )*/
                 Container(
                   padding: EdgeInsets.only(top: statusBarHeight),
                   decoration: const BoxDecoration(color: Color.fromARGB(50, 0, 0, 0)),
@@ -155,55 +143,6 @@ class _CameraState extends State<Camera> {
         ),
       ),
     );
-    /*return Scaffold(
-      appBar: AppBar(title: const Text("Take a Picture"),
-        actions: [
-          IconButton(
-              onPressed: (){
-                //'hacky' way to toggle between exactly 2 cameras
-                cameraNumber = 1-cameraNumber;
-                onNewCameraSelected(widget.cameras[cameraNumber]);
-              },
-              icon: Icon(Icons.camera)
-          ),
-        ],
-      ),
-      //use a futurebuilder so that the screen doesnt show anything
-      //until the camera is initialized
-      body: FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot){
-          if (snapshot.connectionState == ConnectionState.done){
-            //if the future is complete, show the preview
-            return CameraPreview(_controller);
-          } else{
-            return const Center(child: CircularProgressIndicator(),);
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.camera_alt),
-        onPressed: () async {
-          //try / catch taking the picture
-          try{
-            //check that the camera is initialized
-            await _initializeControllerFuture;
-
-            //take the picture and get an 'image'
-            //of where it is saved on the device
-            final image = await _controller.takePicture();
-
-            if(!mounted) return;
-
-            //if the picture was taken, display on a new screen
-            Navigator.of(context).pop(image.path);
-
-          } catch(e){
-            print(e);
-          }
-        },
-      ),
-    );*/
   }
   void onNewCameraSelected (CameraDescription cameraDescription) async {
     final previousCameraController = _controller;

@@ -159,10 +159,17 @@ class _SettingsViewState extends State<SettingsView> {
                               applicationName: "Post It, Pin It",
                               applicationVersion: "1.0.0",
                               children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(top: 30),
-                                  child: Text(
-                                      "This app was created by Alexander Naylor, Dylan Moore, Sukhpreet Bansal and Hamza Khan."),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 30),
+                                  child: Column(
+                                    children: const [
+                                      Text("This app was created by:"),
+                                      ListTile(title: Text("Alexander Naylor"), subtitle: Text("Maps and Geolocation"),),
+                                      ListTile(title: Text("Dylan Moore"), subtitle: Text("Database and Local Storage"),),
+                                      ListTile(title: Text("Sukhpreet Bansal"), subtitle: Text("Dialogs and Snackbars"),),
+                                      ListTile(title: Text("Hamza Khan"), subtitle: Text("Camera and Localisation"),),
+                                    ],
+                                  ),
                                 ),
                               ],
                               applicationLegalese:

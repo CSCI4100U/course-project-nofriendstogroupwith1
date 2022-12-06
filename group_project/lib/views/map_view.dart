@@ -74,6 +74,7 @@ class _MapView extends State<MapView> {
     if (streamedPosition!=null) {
       mapController.move(
           LatLng(streamedPosition!.latitude, streamedPosition!.longitude), mapController.zoom);
+          ScaffoldMessenger.of(context).clearSnackBars(); //Clear existing snackbars so this one feels snappier.
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
                 content: Text(

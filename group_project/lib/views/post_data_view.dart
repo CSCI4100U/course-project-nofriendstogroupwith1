@@ -48,7 +48,7 @@ class _PostDataViewState extends State<PostDataView> {
               //For each post, figure out how many days ago it was posted and increment the appropriate key in the map
               int daysAgo =
                   ((_currentTime - element.dateTime!) / _msperday).floor();
-              _postsPerDay[daysAgo] = _postsPerDay[daysAgo] ?? 0 + 1;
+              _postsPerDay[daysAgo] = (_postsPerDay[daysAgo] ?? 0) + 1;
             },
           );
           List<_PostsOnDay> data = [];

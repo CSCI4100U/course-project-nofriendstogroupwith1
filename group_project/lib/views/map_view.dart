@@ -31,8 +31,10 @@ class _MapView extends State<MapView> {
   final SavedModel _savedModel = SavedModel();
 
   Future<void> _showPost(Post post) async {
-    bool? hideFromMap = await Navigator.pushNamed(context, "/postView", arguments: post) as bool;
-    if (hideFromMap!=null && hideFromMap) {
+    bool? hideFromMap =
+        await Navigator.pushNamed(context, "/postView", arguments: post)
+            as bool;
+    if (hideFromMap != null && hideFromMap) {
       //Instantly remove a hidden post from the map while waiting for the updated list.
       posts.remove(post);
     }
@@ -53,35 +55,37 @@ class _MapView extends State<MapView> {
     Geolocator.isLocationServiceEnabled().then((value) {
       Geolocator.requestPermission().then((value) {
         Geolocator.checkPermission().then((value) {
-          subscription ??= Geolocator.getPositionStream().listen(updatePosition);
+          subscription ??=
+              Geolocator.getPositionStream().listen(updatePosition);
         });
       });
     });
-
   }
 
   @override
   void dispose() {
     super.dispose();
-    if (subscription!=null) {
+    if (subscription != null) {
       subscription!.cancel();
-      subscription=null;
+      subscription = null;
     }
   }
 
   void _centerOverUser() {
     //Try using streamedPosition
-    if (streamedPosition!=null) {
+    if (streamedPosition != null) {
       mapController.move(
-          LatLng(streamedPosition!.latitude, streamedPosition!.longitude), mapController.zoom);
-          ScaffoldMessenger.of(context).clearSnackBars(); //Clear existing snackbars so this one feels snappier.
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text(
-                  "Map Centered",
-                  style: TextStyle(fontSize: 14),
-                )),
-          );
+          LatLng(streamedPosition!.latitude, streamedPosition!.longitude),
+          mapController.zoom);
+      ScaffoldMessenger.of(context)
+          .clearSnackBars(); //Clear existing snackbars so this one feels snappier.
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text(
+          "Map Centered",
+          style: TextStyle(fontSize: 14),
+        )),
+      );
       //Otherwise fall back to asking for a current location.
     }
   }
@@ -107,7 +111,7 @@ class _MapView extends State<MapView> {
       }
     }
 
-    posts=allPosts;
+    posts = allPosts;
     return allPosts;
   }
 
@@ -117,10 +121,17 @@ class _MapView extends State<MapView> {
         _showPost(post);
       },
       child: Container(
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.blue ,width: 4)),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.white,
+            border: Border.all(color: Colors.blue, width: 4)),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
-          child: Image.network(post.imageURL!, fit: BoxFit.fill),
+          child: Image.network(
+            post.imageURL!,
+            fit: BoxFit.fill,
+            errorBuilder: (context, error, stackTrace) => (Container()),
+          ),
         ),
       ),
     );

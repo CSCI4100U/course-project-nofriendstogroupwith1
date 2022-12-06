@@ -62,6 +62,10 @@ class _MapView extends State<MapView> {
   late Position currentPosition;
 
   Future<List<Post>> _getAllVisiblePosts() async {
+    await Geolocator.isLocationServiceEnabled();
+    await Geolocator.requestPermission();
+    await Geolocator.checkPermission();
+
     currentPosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best);
 
@@ -95,12 +99,7 @@ class _MapView extends State<MapView> {
 
   @override
   Widget build(BuildContext context) {
-    Geolocator.isLocationServiceEnabled().then((value) => null);
-    Geolocator.requestPermission().then((value) => null);
-    Geolocator.checkPermission().then((LocationPermission permission) {
-      print("Check Location Permission: $permission");
 
-    });
 
     return Stack(
       children: [

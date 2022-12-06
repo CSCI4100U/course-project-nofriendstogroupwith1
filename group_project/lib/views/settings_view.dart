@@ -13,6 +13,7 @@ class _SettingsViewState extends State<SettingsView> {
   final SettingsModel _settingsModel = SettingsModel();
 
   bool _autoSave = true;
+  bool _12Hour = false;
   String _language = "en-US";
 
   Future<void> getUpdatedSettings() async {
@@ -22,6 +23,9 @@ class _SettingsViewState extends State<SettingsView> {
     _language =
         await _settingsModel.getStringSetting(SettingsModel.settingLanguage) ??
             'en-US';
+    _12Hour =
+        await _settingsModel.getBoolSetting(SettingsModel.setting12Hour) ??
+            false;
   }
 
   Widget _buildSetting({String label = "", required Widget child}) {
@@ -75,6 +79,16 @@ class _SettingsViewState extends State<SettingsView> {
                           name: SettingsModel.settingAutoSave, value: value);
                     });
                   }),
+              _buildToggleSetting(
+                  label: "Use 12-Hour Time",
+                  value: _12Hour,
+                  onChanged: (value) {
+                    setState(() {
+                      _12Hour = value;
+                      _settingsModel.setBoolSetting(
+                          name: SettingsModel.setting12Hour, value: value);
+                    });
+                  }),
               _buildSettingHeader("Localization"),
               _buildSetting(
                 label: SettingsModel.settingLanguage,
@@ -121,11 +135,11 @@ class _SettingsViewState extends State<SettingsView> {
                       onPressed: () {
                         showAboutDialog(
                           context: context,
+                          applicationIcon: const FlutterLogo(),
                           applicationName: "Post It, Pin It",
-                          applicationVersion: "4.1.2",
+                          applicationVersion: "1.0.0",
                           children: [
-                            const Text(
-                                "\nThis app is created by Alexander Naylor, Dylan Moore, Sukhpreet Bansal and Hamza Khan."),
+                            const Padding(padding: EdgeInsets.only(top:30),child: Text("This app was created by Alexander Naylor, Dylan Moore, Sukhpreet Bansal and Hamza Khan."),),
                           ],
                           applicationLegalese:
                               "Copyright 2022 © Alexander Naylor, Dylan Moore, Sukhpreet Bansal and Hamza Khan.",

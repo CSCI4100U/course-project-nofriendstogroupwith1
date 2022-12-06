@@ -4,6 +4,7 @@ class SettingsModel {
 
   static const String settingAutoSave = "autoSave";
   static const String settingLanguage = "language";
+  static const String setting12Hour = "12Hour";
 
   Future<void> setStringSetting({required String name, required String value}) async {
     final prefs = await SharedPreferences.getInstance();

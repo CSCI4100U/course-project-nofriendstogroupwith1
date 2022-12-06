@@ -45,7 +45,7 @@ class _MapView extends State<MapView> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
               content: Text(
-            "Map Centerd",
+            "Map Centered",
             style: TextStyle(fontSize: 14),
           )),
         );

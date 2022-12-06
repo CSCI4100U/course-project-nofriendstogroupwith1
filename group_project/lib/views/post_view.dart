@@ -33,6 +33,8 @@ class _PostViewState extends State<PostView> {
     );
   }
 
+
+
   Widget _buildPost(Post post) {
     late Widget image;
 
@@ -70,10 +72,25 @@ class _PostViewState extends State<PostView> {
                               snapshot.data![0].administrativeArea!,
                           style: TextStyle(
                               color: Colors.black,
-                              fontWeight: FontWeight.bold))),
+                              fontWeight: FontWeight.bold
+                          )
+                      )
+                  ),
                 ),
               );
             })),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: FutureBuilder(
+            future: post.GetTimeAsString(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(snapshot.data!);
+              }
+              return Text("Loading date...");
+            }
+          ),
+        ),
         _buildCaptionBox(post.caption ?? "[Missing Caption]"),
       ],
     );

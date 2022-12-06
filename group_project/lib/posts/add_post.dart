@@ -31,6 +31,8 @@ class _AddPostState extends State<AddPost> {
 
   String? _imagePath;
 
+  int? _dateTime;
+
   PostModel _model = PostModel();
 
   @override
@@ -89,6 +91,7 @@ class _AddPostState extends State<AddPost> {
       Post post_data = Post(
           title: _title,
           imageURL: _imageURL,
+          dateTime: _dateTime,
           location: LatLng(pos.latitude, pos.longitude),
           caption: _caption);
 
@@ -162,10 +165,14 @@ class _AddPostState extends State<AddPost> {
     //get a list of all cameras on the device
     final cameras = await availableCameras();
 
-    var result =
-        await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return Camera(cameras: cameras);
-    }));
+    _dateTime = DateTime.now().millisecondsSinceEpoch;
+
+    var result = await Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) {
+            return Camera(cameras: cameras);
+          }
+        ),
+    );
 
     if (result != null && result is String) {
       _imagePath = result;

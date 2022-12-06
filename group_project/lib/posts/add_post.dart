@@ -50,7 +50,11 @@ class _AddPostState extends State<AddPost> {
   void initState() {
     super.initState();
 
-    takepic();
+    takepic().then((value) {
+      if (!value) {
+        Navigator.of(context).pop();
+      }
+    });
   }
 
   @override
@@ -81,6 +85,8 @@ class _AddPostState extends State<AddPost> {
 
     final double sizeToFit = min(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
 
+
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add Post"),
@@ -97,7 +103,7 @@ class _AddPostState extends State<AddPost> {
                 child: _imagePath != null
                     ? Image.file(File(_imagePath!), fit: BoxFit.scaleDown, width: sizeToFit, height: sizeToFit,)
                     : //Text("Yes pic"):
-                Text("no pic") //Image.file(File(widget.imagePath!)),
+                Center(child: Text("no pic")) //Image.file(File(widget.imagePath!)),
             ),
             Form(
               key: _formKey,
@@ -261,7 +267,7 @@ class _AddPostState extends State<AddPost> {
     }
   }
 
-  Future<void> takepic() async {
+  Future<bool> takepic() async {
     WidgetsFlutterBinding.ensureInitialized();
     //get a list of all cameras on the device
     final cameras = await availableCameras();
@@ -276,9 +282,17 @@ class _AddPostState extends State<AddPost> {
     );
 
     if (result != null && result is String) {
-      _imagePath = result;
+      setState(() {
+        _imagePath = result;
+      });
+      return true;
     }
 
-    setState(() {});
+    if (_imagePath==null) {
+      return false;
+    }
+
+    return true;
+
   }
 }

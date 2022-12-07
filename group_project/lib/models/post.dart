@@ -67,7 +67,6 @@ class Post {
     caption = map['caption'];
     
     dateTime = map['dateTime'];
-    print("Test");
 
     GeoPoint gp = map['location'];
     location = LatLng(gp.latitude, gp.longitude);
